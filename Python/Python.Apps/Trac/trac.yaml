@@ -1,0 +1,45 @@
+- application: Trac
+  title: Trac
+  description: Trac is an enhanced wiki and issue tracking system for software development projects.
+  author: Edgewall Software
+  link: http://trac.edgewall.org/
+  eula: http://trac.edgewall.org/wiki/TracLicense
+  icon: trac-100x100.png
+  webserver: iis
+  tags:
+  - development
+
+
+- application: Trac
+  webserver: iis
+  os: windows
+  dependencies:
+  - Python27.FCGI.Engine
+  version: 1.0
+  files:
+  - file: trac_wsgi.py
+  install_command: |
+    install_path = iis.map_webserver_path(parameters['virtual_path'])
+    python.create_virtual_env(install_path)
+    os.chdir(install_path)
+    os.cmd(r'venv\scripts\pip install trac==1.0')
+    import os.path as os_path
+    if not os_path.exists('trac'):
+        os.cmd(r'venv\scripts\trac-admin.exe "trac" initenv "My Project" "sqlite:db/trac.db"')
+    # trac_wsgi.py
+    os.copy_file(files[0].path, install_path)
+    os.make_dir('log')
+    windows.set_write_permission('log', 'IIS_IUSRS')
+  parameters:
+    virtual_path: ~
+  engines:
+    - engine: PythonEngine
+      path: "*"
+      environment_variables:
+        DJANGO_SETTINGS: "settings.py"
+        VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+        PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+        PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib"
+        WSGI_APP: "trac_wsgi.application"
+        ERROR_LOG_DIR:  "log"
+

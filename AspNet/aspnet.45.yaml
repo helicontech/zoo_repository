@@ -1,0 +1,56 @@
+- product: AspNet45
+  title: AspNet 4.5
+  version: 4.5
+  description: |
+    ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.
+    You can also create Web APIs, mobile sites, use real-time technologies like Web Sockets and more!
+  link: http://www.asp.net/
+  eula: http://www.asp.net/privacy
+  author: Microsoft
+  icon: aspnet-100x100.png
+  tags:
+  - server
+
+
+- product: AspNet45
+  os: windows
+  dependencies:
+    - Microsoft.IIS
+    - Microsoft.NetFramework.45
+
+
+- product: AspNet45
+  bitness: 32
+  install_command: |
+    os.cmd('{0} aspnet_regiis -r'.format("%windir%\Microsoft.NET\Framework\v4.0.30319")
+
+  uninstall_command: |
+    os.cmd('{0} aspnet_regiis -u'.format("%windir%\Microsoft.NET\Framework\v4.0.30319")
+
+  find_installed_command: |
+    dll_path = windows.registry_read(r"HKLM\SOFTWARE\Microsoft\ASP.NET\4.0.30319.0","DllFullPath","32")
+    if dll_path:
+      result = InstalledProductInfo()
+      result.install_dir = "%windir%\Microsoft.NET\Framework\v4.0.30319"
+      result.version =  4.5
+
+
+
+- product: AspNet45
+  bitness: 64
+  install_command: |
+    os.cmd('{0} aspnet_regiis -r'.format("%windir%\Microsoft.NET\Framework\v4.0.30319")
+    os.cmd('{0} aspnet_regiis -r'.format("%windir%\Microsoft.NET\Framework64\v4.0.30319")
+
+  uninstall_command: |
+    os.cmd('{0} aspnet_regiis -u'.format("%windir%\Microsoft.NET\Framework\v4.0.30319")
+    os.cmd('{0} aspnet_regiis -u'.format("%windir%\Microsoft.NET\Framework64\v4.0.30319")
+
+
+  find_installed_command: |
+    dll_path = windows.registry_read(r"HKLM\SOFTWARE\Microsoft\ASP.NET\4.0.30319.0","DllFullPath","64")
+    if dll_path:
+      result = InstalledProductInfo()
+      result.install_dir = "%windir%\Microsoft.NET\Framework64\v4.0.30319"
+      result.version =  4.5
+

@@ -1,0 +1,46 @@
+- engine:  Railo4OnTomcat7Engine
+  title: Railo 4 on Tomcat 7 Service Engine
+  description: |
+    работает сервис Tomcat 7, общается по http, внутри Tomcat есть зу модуль, который в рантайме создаёт сайты и контексты внутри томкета
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: railo-100x100.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    pass
+  uninstall_command: |
+    pass
+  config:
+    enabled: true
+    full_path: '%JDK_HOME%\\bin\\java.exe'
+    arguments: ''
+    protocol: 'http'
+    transport: 'tcp.service'
+    host: '127.0.0.1'
+    port_lower: 8888
+    port_upper: 8888
+    min_instances: 1
+    max_instances: 1
+    environment_variables:
+      ZOO_SUBSTITUTE_HOST: 'zoo%INSTANCE_ID%%APPL_ID%'
+
+
+- engine:  Railo4OnTomcat7Engine
+  version: 1.0.0.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Helicon.Zoo.TomcatModuleForRailo
+
+
+
+- engine:  Railo4OnTomcat7Engine
+  version: 1.0.0.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Helicon.Zoo.TomcatModuleForRailo
+

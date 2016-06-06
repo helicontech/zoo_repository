@@ -1,0 +1,20 @@
+- product: TortoiseHg
+  title: TortoiseHg
+  description: |
+    TortoiseHg is a Windows shell extension and a series of applications for the Mercurial distributed revision control system.
+    It also includes a Gnome/Nautilus extension and a CLI wrapper application so the TortoiseHg tools can be used on non-Windows platforms.
+  link: http://tortoisehg.bitbucket.org
+  author: TortoiseHg Contributors
+  eula: http://www.gnu.org/licenses/gpl-2.0.txt
+  dependencies: ~
+  icon: tortoisehg-100x100.png
+  tags:
+  - development
+
+
+- product: TortoiseHg
+  os: windows
+  install_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  uninstall_command: |
+    windows.uninstall_msi(files[0].path)

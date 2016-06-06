@@ -1,0 +1,39 @@
+- product: Erlang59
+  title: Erlang
+  description: |
+    Erlang is a programming language used to build massively scalable soft real-time systems
+    with requirements on high availability. Some of its uses are in telecoms, banking, e-commerce,
+    computer telephony and instant messaging. Erlang's runtime system has built-in support for concurrency,
+    distribution and fault tolerance.
+  link: http://www.erlang.org/
+  eula: http://www.erlang.org/EPLICENSE
+  author: Ericsson Computer Science Laboratory
+  icon: erlang-100x100.png
+  tags:
+  - server
+
+
+- product: Erlang59
+  os: windows
+  dependencies: []
+  parameters:
+    install_dir: '%SystemDrive%\erl5.9'
+  install_command: |
+    os.cmd('"{0}" /S /D="{1}"'.format(files[0].path, parameters['install_dir']))
+  upgrade_command: |
+    os.cmd('"{0}" /S /D="{1}"'.format(files[0].path, parameters['install_dir']))
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      result = InstalledProductInfo()
+      result.version = windows.get_file_version(parameters['install_dir'] + '\\bin\\erlang.exe', parts=3)
+      result.install_dir = parameters['install_dir']
+
+
+- product: Erlang59
+  os: windows
+  version: 5.9 R15B
+  files:
+  - file: http://www.erlang.org/download/otp_win32_R15B.exe
+

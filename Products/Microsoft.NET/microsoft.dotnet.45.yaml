@@ -1,0 +1,38 @@
+- product:  Microsoft.NetFramework.45
+  title: Microsoft .NET Framwork 4.5.1
+  link: http://www.microsoft.com/net
+  eula: http://www.microsoft.com/en-us/legal/intellectualproperty/UseTerms/default.aspx
+  author: Microsoft Corporation
+  icon: dotnet-200x200.png
+  version: 4.5.50938
+  description: |
+     Software framework developed by Microsoft that runs primarily on Microsoft Windows.
+     It includes a large library and provides language interoperability
+     (each language can use code written in other languages) across several programming languages.
+     Programs written for .NET Framework execute in a software environment (as contrasted to hardware environment),
+     known as the Common Language Runtime (CLR),
+     an application virtual machine that provides services such as security, memory management, and exception handling.
+     The class library and the CLR together constitute .NET Framework.
+  os: windows>=6.0.0,<=6.2
+  tags:
+  - framework
+  files:
+  - file: http://go.microsoft.com/fwlink/?LinkId=321332
+    sha1: 5934dd101414bbc0b7f1ee2780d2fc8b9bec5c4d
+    filename: NDP451-KB2858728-x86-x64-AllOS-ENU.exe
+  install_command: |
+    code = os.cmd('"{0}" /q /chainingpackage webpi /norestart /log %INSTALL_LOG_PATH%.html'.format(files[0].path), ignore_exit_code=True)
+    if code == 3010:
+      core.set_reboot_reqiured()
+    elif code:
+      raise Exception('Install failed with error code {0}'.format(code))
+  find_installed_command: |
+    result = windows.get_installed_program("Microsoft .NET Framework 4.5.1")
+    if result:
+      result.install_dir = r"%SystemDrive%\Windows\Microsoft.NET\Framework"
+
+  uninstall_command: |
+    windows.uninstall_msi_by_name("Microsoft .NET Framework 4.5.1")
+
+
+

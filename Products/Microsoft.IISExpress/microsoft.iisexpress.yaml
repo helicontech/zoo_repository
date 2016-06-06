@@ -1,0 +1,42 @@
+- product: Microsoft.IISExpress
+  title: Microsoft IIS Express
+  description: IIS Express is a simpler and self-contained version of IIS that is optimized for developers.
+  link: http://www.iis.net/
+  author: Microsoft
+  icon: iis-200x200.png
+  os: windows>=6.0
+  tags:
+  - server
+  webserver: iisexpress
+  dependencies: ~
+  #- Microsoft.NetFramework.45
+  install_command: |
+    windows.install_msi(files[0].path)
+  uninstall_command: |
+    windows.uninstall_msi(files[0].path)
+  find_installed_command: |
+    result = windows.get_installed_program("IIS 8.0 Express")
+    if result:
+      result.install_dir = windows.registry_read("HKLM\\SOFTWARE\\Microsoft\\iisexpress\\8.0\\", "InstallPath")
+  uninstall_command: |
+    windows.uninstall_msi_by_name("IIS 8.0 Express", product.version)
+
+
+
+
+
+- product: Microsoft.IISExpress
+  version: 8.0.1508
+  bitness: 32
+  webserver: iisexpress
+  files:
+  -  file: http://download.microsoft.com/download/C/C/C/CCCB55BE-82C3-4B59-BF00-0B4ED353AE12/iisexpress_8_0_RC_X86_en-US.msi
+     sha1: 039F754F93E7023297D74093E18211C27D92BF2D
+
+- product: Microsoft.IISExpress
+  version: 8.0.1508
+  bitness: 64
+  webserver: iisexpress
+  files:
+  -  file: http://download.microsoft.com/download/C/C/C/CCCB55BE-82C3-4B59-BF00-0B4ED353AE12/iisexpress_8_0_RC_X64_en-US.msi
+     sha1: 3FE2CAC4BD6B14B64C4B7FA5F94AD8CB41D296B4

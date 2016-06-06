@@ -1,0 +1,25 @@
+- product: Node.js
+  title: Node.js
+  description: Node.js is an event-driven I/O server-side JavaScript environment based on V8.
+  link: http://nodejs.org/
+  eula: https://raw.githubusercontent.com/joyent/node/v0.10.29/LICENSE
+  author: Joyent
+  icon: nodejs-100x100.png
+  tags:
+  - server
+
+
+- product: Node.js
+  os: windows
+  dependencies: []
+  install_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  upgrade_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  uninstall_command: |
+    windows.uninstall_msi_by_name("Node.js", product.version)
+  find_installed_command: |
+    result = windows.get_installed_program("Node.js")
+    if result:
+      result.install_dir = windows.registry_read(r"HKCU\Software\Node.js","InstallPath")
+

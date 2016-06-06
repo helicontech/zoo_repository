@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <system.webServer>
+    <defaultDocument>
+      <files>
+        <remove value="index.cfm" />
+        <add value="index.cfm" />
+      </files>
+    </defaultDocument>
+        <security>
+            <requestFiltering>
+                <hiddenSegments>
+                    <add segment="logs" />
+                    <add segment="temp" />
+                    <add segment="patch" />
+                </hiddenSegments>
+            </requestFiltering>
+        </security>
+  </system.webServer>
+</configuration>
+

@@ -1,0 +1,50 @@
+- application: Ghost
+  title: Ghost
+  description: |
+    A beautifully designed platform dedicated to one thing: Publishing.
+    Ghost is an Open Source application which allows you to write and publish your own blog, giving you the tools to make it easy and even fun to do.
+    It's simple, elegant, and designed so that you can spend less time making your blog work and more time blogging.
+  author: Ghost Foundation
+  link: https://ghost.org/
+  eula: https://ghost.org/about/license/
+  icon: ghost-200x200.png
+  tags:
+  - blog
+  - cms
+  dependencies:
+  - NodejsEngine
+
+
+- application: Ghost
+  os: windows
+  version: 0.5.2
+  files:
+  - file: http://ghost.org/zip/ghost-0.5.2.zip
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path)
+    os.chdir(install_path)
+    # os.delete_path('node_modules')
+    os.cmd(r'md _appdata\npm')
+    os.cmd(r'dir')
+    os.cmd(r'copy config.example.js config.js')
+    os.replace_in_file("config.js", "port: '2368'", "port: process.env.PORT||2368" )
+    os.replace_in_file("config.js", "port: '2369'", "port: process.env.PORT||2369" )
+    os.cmd(r'node -v')
+    os.cmd(r'npm -v')
+    os.cmd(r'npm install --production')
+    os.cmd(r'if exist %SystemRoot%\\Temp\\node-sqlite3-Release rmdir %SystemRoot%\\Temp\\node-sqlite3-Release /S /Q')
+    os.make_dir('logs')
+    windows.set_write_permission('logs', 'IIS_IUSRS')
+    windows.set_write_permission('content', 'IIS_IUSRS')
+  parameters:
+    ~
+  engines:
+  - engine: NodejsEngine
+    path: "*"
+    environment_variables:
+      APP_WORKER: "index.js"
+      NODE_PATH: "%APPL_PHYSICAL_PATH%\\node_modules"
+      NODE_ENV: "production"
+      APPDATA: "%APPL_PHYSICAL_PATH%\\_appdata"
+      ERROR_LOG_DIR: "logs"

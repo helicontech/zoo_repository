@@ -1,0 +1,76 @@
+- application:  PythonProject
+  title: Python sample project
+  version: 1.0
+  description: |
+    This sample Python project provides instruction how to run Python applications with Helicon Zoo.
+    Please use this project as a starting point for your Python application deployment.
+    This project can run on both Python 2.7 and Python 3.7, but once it is set up python version cannot be
+    easily switched as it uses virtualenv.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: python-100x100.png
+  tags:
+  - template
+  os: windows
+
+  files:
+  - file: template.zip
+
+  dependencies:
+  - or:
+    - Python34.FCGI.Engine
+    - Python34.HTTP.Engine
+    - Python27.FCGI.Engine
+    - Python27.HTTP.Engine
+
+
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.chdir(install_path)
+    if not os.path_exists('venv'):
+        os.cmd(r'virtualenv.exe venv --clear')
+    os.cmd(r'venv\scripts\pip.exe install --requirement=requirements.txt')
+
+  engines:
+
+  - engine: Python34.FCGI.Engine
+    environment_variables:
+      VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+      PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+      PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib;%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\project"
+      ERROR_LOG_DIR: "log"
+      WSGI_HANDLER: "welcome.application"
+
+  - engine: Python34.HTTP.Engine
+    environment_variables:
+      VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+      PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+      PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib;%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\project"
+      ERROR_LOG_DIR: "log"
+      HTTP_WORKER: 'tornado_worker.py'
+
+  - engine: Python27.FCGI.Engine
+    environment_variables:
+      VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+      PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+      PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib;%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\project"
+      ERROR_LOG_DIR: "log"
+      WSGI_HANDLER: "welcome.application"
+
+  - engine: Python27.HTTP.Engine
+    environment_variables:
+      VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+      PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+      PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib;%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\project"
+      ERROR_LOG_DIR: "log"
+      HTTP_WORKER: 'tornado_worker.py'
+  
+  locations:
+  - path: 'static'
+    engine: none  
+  - path: '*'
+    engine: selected-engine
+     

@@ -1,0 +1,67 @@
+- product:  Ruby.2.1
+  title: Ruby 2.1
+  version: 2.0.0-p247
+  description: |
+    A dynamic, open source programming language with a focus on simplicity and productivity.
+  link: http://www.ruby-lang.org/
+  eula: http://www.ruby-lang.org/en/LICENSE.txt
+  author: Yukihiro matz Matsumoto
+  icon: ruby-100x100.png
+  tags:
+  - server
+
+- product:  Ruby.2.1
+  os: windows
+  files:
+  - file: http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.1.7.exe
+  install_command: |
+    os.cmd(r'"{0}" /verysilent /dir="{1}" /LOG="%LOG_DIR%\rubyinstaller.log"'.format(files[0].path, parameters['install_dir']))
+  upgrade_command: |
+    os.cmd(r'"{0}" /verysilent /dir="{1}" /LOG="%LOG_DIR%\rubyinstaller.log"'.format(files[0].path, parameters['install_dir']))
+  uninstall_command: |
+    ruby_path = parameters['install_dir']
+    if os.path_exists(ruby_path):
+        os.cmd(os.path_join(ruby_path, "unins000.exe") + r' /verysilent /LOG="%LOG_DIR%\rubyinstaller.log"')
+  find_installed_command: |
+    result = windows.get_installed_program(re.compile(r"Ruby\s+2\.1\.\d+", re.I))
+
+- product:  Ruby.2.0.Devkit
+  title: Ruby 2.0 Development Kit
+  version: 4.7.2
+  description: |
+    The RubyInstaller Development Kit is a toolkit that is needed to build and use native C/C++ extensions for Ruby on Windows.
+    Recommended to install if you plan to use any binary gems.
+  link: http://rubyinstaller.org/add-ons/devkit/
+  eula: http://www.gnu.org/licenses/gpl.html
+  author: Ruby Installer Contributors
+  icon: ruby-100x100.png
+  tags:
+  - server
+
+  dependencies:
+    - Ruby.2.1
+
+  files:
+  - file: http://dl.bintray.com/oneclick/rubyinstaller/DevKit-mingw64-32-4.7.2-20130224-1151-sfx.exe
+
+  install_command: |
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    devkit_path = parameters['install_dir']
+    os.un7zip(files[0].path, devkit_path)
+    os.chdir(devkit_path)
+    os.cmd(r'"{0}\bin\ruby.exe" dk.rb init'.format(ruby_path))
+    os.cmd(r'"{0}\bin\ruby.exe" dk.rb install'.format(ruby_path))
+  upgrade_command: |
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    devkit_path = parameters['install_dir']
+    os.un7zip(files[0].path, devkit_path)
+    os.chdir(devkit_path)
+    os.cmd(r'"{0}\bin\ruby.exe" dk.rb init'.format(ruby_path))
+    os.cmd(r'"{0}\bin\ruby.exe" dk.rb install'.format(ruby_path))
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      result = InstalledProductInfo()
+      result.version = self.version
+      result.install_dir = parameters['install_dir']

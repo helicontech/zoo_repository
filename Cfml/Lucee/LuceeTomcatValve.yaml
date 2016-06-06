@@ -1,0 +1,61 @@
+- product: Lucee.TomcatValve
+  title: Helicon Zoo Valve for Tomcat in Lucee.
+  description: |
+    This module provides cooperation between Tomcat Server and Helicon Zoo Module.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: helicontech-100x100.png
+  tags:
+  - server
+  dependencies:
+   - Lucee
+  os: windows
+  install_command: |
+    install_dir = parameters['install_dir']
+    lucee_path = core.current.get_product("Lucee").parameters['install_dir']
+    tomcat_path = os.path_join(lucee_path, 'tomcat')
+    os.un7zip(files[0].path, install_dir)
+    os.cmd("net stop lucee", ignore_exit_code=True)
+    print("Copy HeliconZooTomcatValve.jar to Tomcat installation folder")
+    os.copy_file(os.path_join(install_dir, "HeliconZooTomcatValve.jar"), os.path_join(tomcat_path, "lib"))
+    print("Backup Tomcat server.xml")
+    os.copy_file(os.path_join(tomcat_path, r"conf\server.xml"), os.path_join(tomcat_path, "conf\server_zoo_backup.xml"))    
+    print(r"Register HeliconZooTomcatValve.jar in Tomcat's 'server.xml'")
+    os.replace_in_file(os.path_join(tomcat_path, r"conf\server.xml"), r"(\s*</Engine>)", r'\n      <Valve className="com.helicontech.zoo.tomcat.ZooServerValve" />\1')
+    os.cmd("net start lucee", ignore_exit_code=True)
+  upgrade_command: |
+    install_dir = parameters['install_dir']
+    lucee_path = core.current.get_product("Lucee").parameters['install_dir']
+    tomcat_path = os.path_join(lucee_path, 'tomcat')
+    os.un7zip(files[0].path, install_dir)
+    os.cmd("net stop lucee", ignore_exit_code=True)
+    print("Copy HeliconZooTomcatValve.jar to Tomcat installation folder")
+    os.copy_file(os.path_join(install_dir, "HeliconZooTomcatValve.jar"), os.path_join(tomcat_path, "lib"))
+    print("Since this is upgrade we suppose HeliconZooTomcatValve.jar already registered with Tomcat.")
+    print("No modifications to Tomcat server.xml file made.")
+    os.cmd("net start lucee", ignore_exit_code=True)
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      install_dir = parameters['install_dir']
+      if os.path_exists(os.path_join(install_dir, "HeliconZooTomcatValve.jar")):
+        result = InstalledProductInfo()
+        result.version = self.version
+        result.install_dir = parameters['install_dir']
+  uninstall_command: |
+    install_dir = parameters['install_dir']
+    lucee_path = core.current.get_product("Lucee").parameters['install_dir']
+    tomcat_path = os.path_join(lucee_path, 'tomcat')
+    os.cmd("net stop lucee", ignore_exit_code=True)
+    print("Remove HeliconZooTomcatValve.jar registration from Tomcat server.xml")
+    os.replace_in_file(os.path_join(tomcat_path, r"conf\server.xml"), r'\s*<Valve className="com.helicontech.zoo.tomcat.ZooServerValve" />', r"")
+    print("Delete HeliconZooTomcatValve.jar from Tomcat installation folder")
+    os.delete_path(os.path_join(tomcat_path, r"lib\HeliconZooTomcatValve.jar"))
+    os.delete_path(install_dir)
+    os.cmd("net start lucee", ignore_exit_code=True)
+
+- product:  Lucee.TomcatValve
+  version: 1.3.42
+  files:
+  - file: HeliconZooTomcatValve.zip
+

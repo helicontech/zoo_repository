@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  metadata-complete="true"
+  version="2.5"
+>
+  <servlet-mapping>
+    <servlet-name>CFMLServlet</servlet-name>
+    <url-pattern>*.cfm</url-pattern>
+    <url-pattern>*.cfml</url-pattern>
+    <url-pattern>*.cfc</url-pattern>
+    <url-pattern>*.cfm/*</url-pattern>
+    <url-pattern>*.cfml/*</url-pattern>
+    <url-pattern>*.cfc/*</url-pattern>
+    <url-pattern>/index.cfc/*</url-pattern>
+    <url-pattern>/index.cfm/*</url-pattern>
+    <url-pattern>/index.cfml/*</url-pattern>
+  </servlet-mapping>
+</web-app>
+

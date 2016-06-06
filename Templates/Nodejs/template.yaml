@@ -1,0 +1,35 @@
+- application:  NodeJsProject
+  title: Node.js Project
+  version: 1.0.0
+  description: |
+    Sample Node.js project. 
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: nodejs-100x100.png
+  tags:
+  - template
+  os: windows
+  files:
+  - file: template.zip
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    os.chdir(install_path)
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.make_dir("%DATANPM%")
+    os.cmd(r'npm install --production')
+  engines:
+  - engine: NodejsEngine
+    path: "*"
+    environment_variables:
+      APP_WORKER: "app.js"
+      NODE_PATH: "%APPL_PHYSICAL_PATH%\\node_modules"
+      APPDATA: "%APPL_PHYSICAL_PATH%\\appdata"
+      ERROR_LOG_DIR: "log"
+      DATANPM: '%APPDATA%\npm'
+  locations:
+    - engine: none
+      path: "public/"
+    - engine: selected-engine
+      path: "*"

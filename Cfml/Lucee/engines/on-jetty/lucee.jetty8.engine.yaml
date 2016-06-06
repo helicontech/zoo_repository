@@ -1,0 +1,65 @@
+- engine: LuceeJetty8Engine
+  title: Lucee on Jetty 8 Engine
+  description: |
+    Runs Lucee using Jetty server and works over HTTP. Separate Java process is used for each application, which provides better isolation
+    and improves security but also increases memory usage as each Java process requires lot of RAM.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: lucee.jpg
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    install_dir = parameters['install_dir']
+    os.un7zip(files[0].path, install_dir)
+    os.chdir(install_dir)
+
+    # set %LUCEE_INSTALL_DIR% & %INSTALL_DIR%
+    fixed_install_dir = install_dir.replace('\\', '/')
+    lucee_install_dir = core.current.get_product('Lucee').parameters['install_dir'].replace('\\', '/')
+    os.replace_in_file(r'start.ini', '%INSTALL_DIR%', fixed_install_dir)
+    os.replace_in_file(r'start.config', '%LUCEE_INSTALL_DIR%', lucee_install_dir)
+    os.replace_in_file(r'contexts\lucee.xml', '%INSTALL_DIR%', fixed_install_dir)
+    os.replace_in_file(r'etc\jetty-contexts.xml', '%INSTALL_DIR%', fixed_install_dir)
+
+    jdk_install_dir = core.current.get_product('Oracle.JDK').parameters['install_dir']
+    engine.config['full_path'] = os.path_join(jdk_install_dir,  'bin\\java.exe')
+    engine.config["arguments"] = "-Xmn64m -Xms128m -Xmx256m -Djetty.port=%PORT% -jar start.jar --config={0}\\start.config --ini={0}\\start.ini".format(parameters['install_dir'])
+
+    jetty8_install_dir = core.current.get_product('Jetty8').parameters['install_dir']
+    engine.config['environment_variables']['CURRENT_DIRECTORY'] = jetty8_install_dir
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+  config:
+    enabled: true
+    full_path: "%JDK_HOME%\\bin\\java.exe"
+    arguments: "-Xmn64m -Xms128m -Xmx256m -Djetty.port=%PORT% -jar start.jar --config=%SystemDrive%\\Zoo\\LuceeJetty8Engine\\start.config --ini=%SystemDrive%\\Zoo\\Workers\\jetty\\zoo-railo4\\start.ini"
+    protocol: "http"
+    transport: "tcp"
+    min_instances: 1
+    max_instances: 1
+    environment_variables:
+      CURRENT_DIRECTORY: "%SystemDrive%\\jetty8"
+
+
+- engine: LuceeJetty8Engine
+  version: 1.0
+  webserver: iis
+  files:
+    - file: lucee.jetty8.engine.zip
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Jetty8
+  - Lucee
+
+
+- engine: Railo4Jetty8Engine
+  version: 1.0.0.0
+  webserver: iisexpress
+  files:
+    - file: lucee.jetty8.engine.zip
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Jetty8
+  - Lucee

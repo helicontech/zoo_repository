@@ -1,0 +1,51 @@
+- application: Askbot
+  title: Askbot
+  description: Askbot enables focused discussions in the structured Question and Answer format.
+  author: Evgeny Fadeev and contributors
+  link: http://askbot.org/
+  eula: https://raw.github.com/ASKBOT/askbot-devel/master/LICENSE
+  icon: askbot-100x100.png
+  webserver: iis
+  tags:
+  - forum
+
+- application: Askbot
+  webserver: iis
+  os: windows
+  dependencies:
+  - Python27.FCGI.Engine
+  - Microsoft.UrlRewrite2
+  version: 1.0
+  files: 
+  -  file: askbot.zip
+  install_command: |
+    install_path = parameters['physical-path']
+    python.create_virtual_env(install_path)
+
+    os.un7zip(files[0].path, install_path, "askbotproject")
+    os.delete_path('askbotproject')
+
+    os.chdir(install_path)
+    os.cmd(r'venv\scripts\pip install askbot')
+    
+    # Patching askbot/urls.py to remove colons from urls
+    core.api.os.shell.replace_in_file(r"venv\Lib\site-packages\askbot\urls.py",                 r"/(scope|sort|query|tags|authors|page)/:", r"/\1~" )
+    core.api.os.shell.replace_in_file(r'venv\Lib\site-packages\askbot\search\state_manager.py', r"/(scope|sort|query|tags|authors|page)/:", r"/\1~" )
+
+
+    os.cmd(r'venv\scripts\python.exe manage.py collectstatic -v 0 --noinput')
+    os.cmd(r'venv\scripts\python.exe manage.py syncdb --all --noinput')
+    os.cmd(r'venv\scripts\python.exe manage.py migrate --fake')
+    os.make_dir('logs')
+    windows.set_write_permission('log', 'IIS_IUSRS')
+  parameters: []
+  engines:
+    - engine: Python27.FCGI.Engine
+      path: "*"
+      environment_variables:
+        VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+        PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+        PYTHONPATH: "%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\venv\\Lib\\site-packages"
+        DJANGO_SETTINGS_MODULE: "askbotproject.settings"
+        django.root: "%APPL_VIRTUAL_PATH%"
+        CURRENT_DIRECTORY: "%APPL_PHYSICAL_PATH%\\askbotproject"

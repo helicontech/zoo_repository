@@ -1,0 +1,40 @@
+- application: Coldbox
+  title: Coldbox
+  description: ColdBox is an event-driven, convention-based ColdFusion Development Platform.
+  author:  Ortus Solutions, Corp & Luis Majano
+  link: http://www.coldbox.org
+  eula: http://www.coldbox.org/about/license
+  icon: coldbox-100x100.png
+  tags:
+  - framework
+
+- application: Coldbox
+  os: windows
+  dependencies:
+  - or:
+    - Railo4Jetty8Engine
+    - Railo4OnTomcat7Engine
+  version: 3.7.0
+  files:
+  - file: http://downloads.ortussolutions.com/coldbox_3.7.0.zip
+  - file: patch.zip
+  install_command: |
+    install_path = parameters['physical-path']
+    os.chdir(install_path)
+    os.un7zip(files[0].path, install_path, "coldbox")
+    os.un7zip(files[1].path, install_path)
+    os.make_dir('logs')
+    windows.set_write_permission('logs', 'IIS_IUSRS')
+  parameters:
+    virtual_path: ~
+  engines:
+
+  - engine: Railo4Jetty8Engine
+    path: "*"
+    environment_variables:
+      ERROR_LOG_DIR: "logs"
+
+  - engine: Railo4OnTomcat7Engine
+    path: "*"
+    environment_variables:
+      ERROR_LOG_DIR: "logs"

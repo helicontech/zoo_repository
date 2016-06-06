@@ -1,0 +1,47 @@
+- application: DjangoBB
+  title: DjangoBB
+  description: DjangoBB is a quick and simple forum which uses the Django Framework (written in Python language). Abbreviation DjangoBB stands for Django Bulletin Board.
+  author: slav0nic <slav0nic0@gmail.com>, alafin <alafin@ukr.net>
+  link: http://djangobb.org/
+  eula: http://www.opensource.org/licenses/bsd-license.php
+  icon: djangobb-100x100.png
+  webserver: iis
+  tags:
+  - forum
+
+- application: DjangoBB
+  webserver: iis
+  os: windows
+  dependencies:
+  - Python27.FCGI.Engine
+  version: latest
+  files:
+  - file: https://bitbucket.org/slav0nic/djangobb/get/stable.tar.gz
+  install_command: |
+    virtual_path = parameters['virtual_path']
+    install_path = iis.map_webserver_path(virtual_path)
+    print(install_path)
+    python.create_virtual_env(install_path)
+    os.chdir(install_path)
+    os.un7zip(files[0].path, install_path)
+    os.un7zip('stable.tar', install_path, 'slav0nic-djangobb-1a5c3c7fd26c')
+    os.delete_path('stable.tar')
+    core.api.os.shell.replace_in_file("requirements.txt ", r'^PIL', r'#PIL' )
+    core.api.os.shell.replace_in_file("requirements.txt ", r'^-e\s+git', r'#-e git' )
+    #os.cmd(r'venv\scripts\easy_install.exe PIL')
+    os.cmd(r'venv\scripts\pip install django==1.5.5')
+    #os.cmd(r'venv\scripts\pip install pillow==2.1.0')
+    os.cmd(r'venv\scripts\pip install linaro_django_pagination==2.0.3')
+    os.cmd(r'venv\scripts\pip install -r requirements.txt')
+
+  engines:
+    - engine: Python27.FCGI.Engine
+      path: "*"
+      environment_variables:
+        DJANGO_SETTINGS: "settings.py"
+        #ERROR_LOG_LEVEL: warning
+        PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib;%APPL_PHYSICAL_PATH%;%APPL_PHYSICAL_PATH%\\basic_project"
+        DJANGO_SETTINGS_MODULE: "basic_project.settings"
+        CURRENT_DIRECTORY: "%APPL_PHYSICAL_PATH%\\basic_project"
+        django.root: "%APPL_VIRTUAL_PATH%"
+        PYTHON_EGG_CACHE: "%APPL_PHYSICAL_PATH%\\_egg_cache"

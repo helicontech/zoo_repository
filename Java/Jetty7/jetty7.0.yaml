@@ -1,0 +1,39 @@
+- product: Jetty7
+  title: Jetty 7
+  description: |
+    Jetty is a pure Java-based HTTP server and Java Servlet container.
+    Jetty is developed as a free and open source project as part of the Eclipse Foundation.
+    The web server is used in products such as ActiveMQ, Alfresco, Apache Geronimo, Apache Maven, Google App Engine,
+    Eclipse, FUSE, Twitter's Streaming API and Zimbra.
+    Jetty is also the server in open source projects such as Lift, Eucalyptus and Hadoop.
+    Jetty supports the latest Java Servlet API (with JSP support) as well as protocols SPDY and WebSocket.
+  link: http://www.eclipse.org/jetty/
+  eula: http://www.eclipse.org/legal/epl-v10.html
+  author: Eclipse Foundation
+  dependencies:
+    - Oracle.JDK
+
+  icon: jetty-100x100.png
+  tags: ~
+
+- product: Jetty7
+  os: windows
+  install_command: |
+    os.un7zip(files[0].path, parameters['install_dir'],"jetty-distribution-7.6.17.v20150415")
+    os.cmd('icacls "{0}"  /t /grant:r "IIS_IUSRS:(OI)(CI)RX"'.format(parameters['install_dir']))
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+
+
+
+- product: Jetty7
+  os: windows
+  version: 7.6.17
+  files:
+  - file: http://eclipse.org/downloads/download.php?file=/jetty/7.6.17.v20150415/dist/jetty-distribution-7.6.17.v20150415.zip&r=1
+    sha1: 15fedd07123193aadf336df12a50f0d04c9c0f60
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      result = InstalledProductInfo()
+      result.version = "7.6.17"
+      result.install_dir = parameters['install_dir']

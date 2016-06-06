@@ -1,0 +1,146 @@
+- engine:  Ruby.2.1.FCGI.Engine
+  title: Ruby 2.1 FastCGI Engine
+  description: |
+    This engine allows to run Ruby 2.1 Rack applications. It uses load balanced FastCGI synchronous workers.
+    You can set FastCGI Ruby worker script by setting FASTCGI_WORKER environment variable. By default ZooRack 
+    FastCGI worker installed with this engine will be used to run Rack application placed in web site's folder.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  version: 1.0
+  author: Helicon Tech
+  icon: ruby-100x100.png
+  tags:
+  - engine
+  os: windows
+  files:
+  - file: worker.zip
+
+  install_command: |
+    os.un7zip(files[0].path, parameters['install_dir'])
+    engine.config["install_dir"] = parameters['install_dir']
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    engine.config["environment_variables"]["ENGINE_PATH"] = ruby_path
+    engine.config["environment_variables"]["DEVKIT_PATH"] = core.current.get_product("Ruby.2.0.Devkit").parameters['install_dir']
+    engine.config["environment_variables"]["FASTCGI_WORKER"] = os.path_join(parameters['install_dir'], "zoorack.rb")
+    os.chdir(os.path_join(ruby_path, "bin"))
+    print("\nInstalling bundler..")
+    os.cmd("gem install bundler")
+
+  upgrade_command: |
+    os.un7zip(files[0].path, parameters['install_dir'])
+    engine.config["install_dir"] = parameters['install_dir']
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    engine.config["environment_variables"]["ENGINE_PATH"] = ruby_path
+    engine.config["environment_variables"]["DEVKIT_PATH"] = core.current.get_product("Ruby.2.0.Devkit").parameters['install_dir']
+    engine.config["environment_variables"]["FASTCGI_WORKER"] = os.path_join(parameters['install_dir'], "zoorack.rb")
+    os.chdir(os.path_join(ruby_path, "bin"))
+    print("\nInstalling bundler..")
+    os.cmd("gem install bundler")
+
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+
+  config:
+    enabled: true
+    full_path: '%ENGINE_PATH%\bin\ruby.exe'
+    arguments: '%FASTCGI_WORKER%'
+    protocol: fastcgi
+    transport: NamedPipe
+    environment_variables:
+      ENGINE_PATH: '%ZOO_HOME%\Ruby.2.1'
+      CURRENT_DIRECTORY: '%APPL_PHYSICAL_SHORT_PATH%'
+      DEVKIT_PATH: '%ZOO_HOME%\Ruby.2.0.Devkit'
+      FASTCGI_WORKER: '%ZOO_HOME%\Ruby.2.1.FCGI.Engine\zoorack.rb'
+      HOME: '%APPL_PHYSICAL_SHORT_PATH%'
+      GEM_HOME: '%APPL_PHYSICAL_SHORT_PATH%\.gems'
+      GEM_PATH: '%APPL_PHYSICAL_SHORT_PATH%\.gems;%ENGINE_PATH%\lib\ruby\gems\2.1.0'
+      PATH: '%ENGINE_PATH%\bin;%GEM_HOME%\bin;%DEVKIT_PATH%\bin;%PATH%'
+
+- engine: Ruby.2.1.FCGI.Engine
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Ruby.2.1
+  - Ruby.2.0.Devkit
+
+- engine: Ruby.2.1.FCGI.Engine
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Ruby.2.1
+  - Ruby.2.0.Devkit
+
+
+- engine:  Ruby.2.1.HTTP.Engine
+  title: Ruby 2.1 HTTP Engine
+  version: 1.0
+  description: |
+    This engine allows to run Ruby 2.1 applications by using asynchronous HTTP workers. You can set
+    worker Ruby script as HTTP_WORKER environment variable. By default global Thin installation will 
+    be used to run Rack applications in web site folder.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: ruby-100x100.png
+  tags:
+  - engine
+  os: windows
+
+  install_command: |
+    os.make_dir(parameters['install_dir'])
+    engine.config["install_dir"] = parameters['install_dir']
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    engine.config["environment_variables"]["ENGINE_PATH"] = ruby_path
+    engine.config["environment_variables"]["DEVKIT_PATH"] = core.current.get_product("Ruby.2.0.Devkit").parameters['install_dir']
+    os.chdir(os.path_join(ruby_path, "bin"))
+    print("\nInstalling bundler..")
+    os.cmd("gem install bundler")
+    print("\nInstalling Thin..")
+    os.cmd("gem install thin")
+
+  upgrade_command: |
+    os.make_dir(parameters['install_dir'])
+    engine.config["install_dir"] = parameters['install_dir']
+    ruby_path = core.current.get_product("Ruby.2.1").parameters['install_dir']
+    engine.config["environment_variables"]["ENGINE_PATH"] = ruby_path
+    engine.config["environment_variables"]["DEVKIT_PATH"] = core.current.get_product("Ruby.2.0.Devkit").parameters['install_dir']
+    os.chdir(os.path_join(ruby_path, "bin"))
+    print("\nInstalling bundler..")
+    os.cmd("gem install bundler")
+    print("\nInstalling Thin..")
+    os.cmd("gem install thin")
+
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+
+  config:
+    enabled: true
+    full_path: '%ENGINE_PATH%\bin\ruby.exe'
+    arguments: '%HTTP_WORKER% -e %RACK_ENV% -a %HOST% -p %PORT%'
+    protocol: http
+    transport: tcp
+    environment_variables:
+      ENGINE_PATH: '%ZOO_HOME%\Ruby.2.1'
+      DEVKIT_PATH: '%ZOO_HOME%\Ruby.2.0.Devkit'
+      CURRENT_DIRECTORY: '%APPL_PHYSICAL_SHORT_PATH%'
+      HTTP_WORKER: '%ENGINE_PATH%\bin\thin start'
+      HOME: '%APPL_PHYSICAL_SHORT_PATH%'
+      GEM_HOME: '%APPL_PHYSICAL_SHORT_PATH%\.gems'
+      GEM_PATH: '%APPL_PHYSICAL_SHORT_PATH%\.gems;%ENGINE_PATH%\lib\ruby\gems\2.1.0'
+      PATH: '%ENGINE_PATH%\bin;%GEM_HOME%\bin;%DEVKIT_PATH%\bin;%PATH%'
+
+
+
+- engine: Ruby.2.1.HTTP.Engine
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Ruby.2.1
+  - Ruby.2.0.Devkit
+
+- engine: Ruby.2.1.HTTP.Engine
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Ruby.2.1
+  - Ruby.2.0.Devkit

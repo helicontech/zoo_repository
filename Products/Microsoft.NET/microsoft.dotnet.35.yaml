@@ -1,0 +1,59 @@
+- product:  Microsoft.NetFramework.35
+  title: Microsoft .NET Framwork 3.5 SP1
+  version: 3.5
+  link: http://www.microsoft.com/net
+  eula: http://www.microsoft.com/en-us/legal/intellectualproperty/UseTerms/default.aspx
+  author: Microsoft Corporation
+  icon: dotnet-200x200.png
+  description: |
+     Software framework developed by Microsoft that runs primarily on Microsoft Windows.
+     It includes a large library and provides language interoperability
+     (each language can use code written in other languages) across several programming languages.
+     Programs written for .NET Framework execute in a software environment (as contrasted to hardware environment),
+     known as the Common Language Runtime (CLR),
+     an application virtual machine that provides services such as security, memory management, and exception handling.
+     The class library and the CLR together constitute .NET Framework.
+  find_installed_command: |
+    if windows.registry_read(r'HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5', 'SP') == 1:
+      result = InstalledProductInfo()
+      result.version = '3.5'
+      result.install_dir = r"%SystemDrive%\Windows\Microsoft.NET\Framework"
+  tags:
+  - framework
+
+
+
+- product:  Microsoft.NetFramework.35
+  os: windows>=5.1.0,<=6.0
+  files:
+  - file: http://download.microsoft.com/download/0/6/1/061f001c-8752-4600-a198-53214c69b51f/dotnetfx35setup.exe
+    sha1: EC9F0C31B9949CA1CF14E9A43BCA065FA5BC0E71
+  install_command: |
+    code = os.cmd('"{0}" /q /norestart'.format(files[0].path), ignore_exit_code=True)
+    if code == 3010:
+      core.set_reboot_reqiured()
+    elif code:
+      raise Exception('Install failed with error code {0}'.format(code))
+  uninstall_command: ~
+
+
+- product:  Microsoft.NetFramework.35
+  os: windows>=6.1.0,<6.2
+  install_command: |
+    if windows.get_installation_type() == 'Server Core':
+      windows.install_feature("NetFx3-ServerCore")
+    else:
+      windows.install_feature("NetFx3")
+  uninstall_command: |
+    if windows.get_installation_type() == 'Server Core':
+      windows.uninstall_feature("NetFx3-ServerCore")
+    else:
+      windows.uninstall_feature("NetFx3")
+
+
+- product:  Microsoft.NetFramework.35
+  os: windows>=6.2
+  install_command: |
+    windows.install_feature("NETFX3 /all")
+  uninstall_command: |
+    windows.uninstall_feature("NETFX3 /all")

@@ -1,0 +1,41 @@
+- application: phpMyAdmin
+  title: phpMyAdmin
+  description: |
+    phpMyAdmin is a free software tool written in PHP, intended to handle the administration of MySQL over the World Wide Web.
+  author: phpMyAdmin Team
+  link: http://www.phpmyadmin.net/
+  eula: http://www.phpmyadmin.net/home_page/license.php
+  icon: phpmyadmin-186x186.png
+  tags:
+  - development
+  - database
+
+
+- application: phpMyAdmin
+  version: 4.5.1
+  os: windows
+  dependencies:
+  - or:
+    - Php55Engine
+    - Php54Engine
+    - Php53Engine
+  files:
+  - file: https://files.phpmyadmin.net/phpMyAdmin/4.5.1/phpMyAdmin-4.5.1-english.7z
+    sha1: 41ceb948fd44e20a33dd1d5ab0c53e454aa640c3
+  - file: web.config.txt
+    filename: web.config
+  install_command: |
+    install_dir = parameters['physical-path']
+    os.un7zip(files[0].path, install_dir, "phpMyAdmin-4.5.1-english")
+    os.chdir(install_dir)
+    # web.config
+    os.copy_file(files[1].path, install_dir)
+  parameters:
+    ~
+  engines:
+  - engine: Php55Engine
+    path: "*.php"
+  - engine: Php54Engine
+    path: "*.php"
+  - engine: Php53Engine
+    path: "*.php"

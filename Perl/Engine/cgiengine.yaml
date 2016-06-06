@@ -1,0 +1,58 @@
+- engine:  Perl512.CgiEngine
+  title: Perl 5.12 FastCGI Engine
+  description: |
+    This engine allows to run Perl CGI applications over FastCGI. It uses simple load-balanced synchronous workers.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: perl-100x100.png
+  tags:
+  - engine
+  os: windows
+
+  files:
+  - file: zoofcgi.zip
+    # zoofcgi.pl cgi воркер для perl исходник хранится тут: [ZOO.hg]\ZooEngines\perl
+
+  install_command: |
+    perl_dir = core.current.get_product("Strawberry.Perl512").parameters['install_dir']
+    os.make_dir(parameters['install_dir'])
+    os.un7zip(files[0].path, parameters['install_dir'])
+    engine.config["environment_variables"]["ENGINE_PATH"] = perl_dir + r"\perl\bin"
+    engine.config["full_path"] =  perl_dir + r"\perl\bin\perl.exe"
+    engine.config["arguments"] = parameters['install_dir'] + r"\zoofcgi.pl"
+    engine.config["environment_variables"]["PATH"] = "%APPL_PHYSICAL_SHORT_PATH%\\perl5\\bin;{0}\\c\\bin;{0}\\perl\\site\\bin;{0}\\perl\\bin;%PATH%".format(perl_dir)
+    engine.config["environment_variables"]["PERL5LIB"] = "%APPL_PHYSICAL_SHORT_PATH%\\perl5\\lib\\perl5\\MSWin32-x86-multi-thread;%APPL_PHYSICAL_SHORT_PATH%\\perl5\\lib\\perl5;{0}\\lib".format(perl_dir)
+
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+
+  config:
+    enabled: true
+    full_path: ".\\Strawberry.Perl512\\perl.exe"
+    arguments: ".\\Strawberry.Perl512Engine\\zoofcgi.pl"
+    protocol: "fastcgi"
+    transport: "NamedPipe"
+    environment_variables:
+      CURRENT_DIRECTORY: "%APPL_PHYSICAL_SHORT_PATH%"
+      ERROR_LOG_DIR: "NULL"
+      PERL_CPANM_HOME: '"%APPL_PHYSICAL_SHORT_PATH%\\perl5"'
+      PERL5LIB: '"%APPL_PHYSICAL_SHORT_PATH%\\perl5\\lib\\perl5\\MSWin32-x86-multi-thread";"%APPL_PHYSICAL_SHORT_PATH%\\perl5\\lib\\perl5"'
+      PERL_CPANM_OPT: "--notest --verbose --local-lib=perl5"
+
+
+- engine: Perl512.CgiEngine
+  version: 1.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Perl512BasePackage
+
+- engine: Perl512.CgiEngine
+  version: 1.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Perl512BasePackage
+
+

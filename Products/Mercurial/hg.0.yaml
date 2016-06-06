@@ -1,0 +1,18 @@
+- product: Mercurial
+  title: Mercurial
+  description: |
+    Mercurial is a free, distributed source control management tool.
+    It efficiently handles projects of any size and offers an easy and intuitive interface.
+  link: http://mercurial.selenic.com
+  author: Matt Mackall
+  eula: http://www.gnu.org/licenses/gpl-2.0.txt
+  dependencies: ~
+  icon: hg-100x100.png
+  tags:
+  - development
+
+
+- product: Mercurial
+  os: windows
+  install_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})

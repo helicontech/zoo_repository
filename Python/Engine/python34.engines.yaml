@@ -1,0 +1,110 @@
+﻿
+# FastCGI engine:
+
+- engine:  Python34.FCGI.Engine
+  title: Python 3.4 FastCGI Engine
+  description: |
+    This engine allows to run Python 3.4 FastCGI or WSGI applications by using load-balanced FastCGI workers.
+    You can set FASTCGI_WORKER environment variable to the name of FastCGI script. Alternatively you can set WSGI_HANDLER
+    environment variable to WSGI handler of your application (like "WSGI_HANDLER: my_app.wsgi_app()"). In latter case Microsoft
+    wfastcgi module will be used as FastCGI worker.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  version: 1.0
+  author: Helicon Tech
+  icon: python-100x100.png
+  tags:
+  - engine
+  os: windows
+
+  install_command: |
+    python_dir = core.current.get_product("Python34").parameters['install_dir']
+    engine.config["install_dir"] = python_dir
+    os.cmd(r"{0}\Scripts\pip install wfastcgi".format(python_dir))
+    engine.config["environment_variables"]["ENGINE_PATH"] = python_dir
+    engine.config["full_path"] = r"{0}\python.exe".format(python_dir)
+    engine.config["environment_variables"]["FASTCGI_WORKER"] = r"{0}\Lib\site-packages\wfastcgi.py".format(python_dir)
+    engine.config["environment_variables"]["ENGINE_PATH"] = python_dir
+
+  uninstall_command: |
+    if 'install_dir' in parameters:
+      os.delete_path(parameters['install_dir'])
+
+  config:
+    enabled: true
+    full_path: '%ZOO_HOME%\Python34\python.exe'
+    arguments: '%FASTCGI_WORKER%'
+    protocol: fastcgi
+    transport: NamedPipe
+    environment_variables:
+        ENGINE_PATH: '%ZOO_HOME%\Python34'
+        FASTCGI_WORKER: '%ZOO_HOME%\Python34\Lib\site-packages\wfastcgi.py'
+        PATH: '%ENGINE_PATH%;%ENGINE_PATH%\Scripts;%PATH%'
+
+
+
+- engine: Python34.FCGI.Engine
+  webserver: iis
+  os: windows
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Python34
+  - Python34BasePackage
+
+- engine: Python34.FCGI.Engine
+  webserver: iisexpress
+  os: windows
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Python34
+  - Python34BasePackage
+
+# HTTP Engine:
+  
+- engine:  Python34.HTTP.Engine
+  title: Python 3.4 HTTP Engine
+  description: |
+    This is a generic Python 3.4 engine that works over HTTP. You need to configure HTTP server script using HTTP_WORKER environment variable.
+    Twisted or Tornado are common choices here. Selected HTTP port will be available to the server as '--port' command line argument and
+    %PORT% environment variable. Multiple load balanced instances of HTTP server script will be managed automatically.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  version: 1.0
+  icon: python-100x100.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    python_dir = core.current.get_product("Python34").parameters['install_dir']
+    os.cmd(r"{0}\Scripts\pip install tornado".format(python_dir))
+    engine.config["full_path"] = "{0}\\python.exe".format(python_dir)
+    engine.config["environment_variables"]["ENGINE_PATH"] = python_dir
+
+  config:
+    enabled: true
+    full_path: '%ZOO_HOME%\python34\python.exe'
+    arguments: '"%HTTP_WORKER%" --port=%PORT%'
+    protocol: http
+    transport: tcp
+    environment_variables:
+        ENGINE_PATH: '%ZOO_HOME%\Python34'
+        PATH: '%ENGINE_PATH%;%ENGINE_PATH%\Scripts;%PATH%'
+
+
+- engine: Python34.HTTP.Engine
+  webserver: iis
+  os: windows
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Python34
+
+- engine: Python34.HTTP.Engine
+  webserver: iisexpress
+  os: windows
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Python34
+
+
+

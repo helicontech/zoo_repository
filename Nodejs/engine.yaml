@@ -1,0 +1,48 @@
+- engine: NodejsEngine
+  title: Node.js Engine
+  description: |
+    Runs load balanced Node.js instances over HTTP. Supports asynchronous operations.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: nodejs-100x100.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    install_dir = core.current.get_product("Node.js").parameters['install_dir']
+    self.config["environment_variables"]["ENGINE_PATH"] =  install_dir
+    self.config["full_path"] =  os.path_join(install_dir, "node.exe")
+  upgrade_command: |
+    pass
+  uninstall_command:
+    pass
+  config:
+    enabled: true
+    full_path: 'node.exe'
+    arguments: '"%APP_WORKER%"'
+    protocol: http
+    transport: NamedPipe
+    min_instances: 1
+    max_instances: 1
+    port_lower: 49152
+    port_upper: 65535
+    environment_variables:
+      ENGINE_PATH: '%ZOO_HOME%\Node.js'
+      PATH: '%ENGINE_PATH%;%PATH%'
+      APP_WORKER: '%APPL_PHYSICAL_PATH%\server.js'
+      NODE_PATH: '%APPL_PHYSICAL_PATH%\node_modules'
+
+- engine: NodejsEngine
+  version: 1.1
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Node.js
+
+- engine: NodejsEngine
+  version: 1.1
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Node.js

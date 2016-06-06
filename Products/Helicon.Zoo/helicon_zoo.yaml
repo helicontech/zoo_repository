@@ -1,0 +1,33 @@
+- product: Helicon.Zoo
+  title: Helicon Zoo
+  description: |
+    Helicon Zoo is a single integrated solution to run different popular web technologies and applications on Microsoft IIS.
+    For a convenience it comes as an application repository, from which web applications and complete technology stacks can be
+    easily downloaded and installed. Helicon Zoo brings to IIS support for the following web application engines: PHP, Python
+    (including Django and others), Ruby (including Rails, Sinatra, etc.), Java, Perl, Node.js, ColdFusion (Lucee) and Erlang.
+    All these different web applications and technologies can be mixed together on the same server and even within same web site.
+    Plus a number of high quality, free and ready-to-run web applications can be installed form Helicon Zoo repository to your server
+    in a matter of few mouse clicks.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: zoo-256x256.png
+  version: 4.0.256
+  files:
+  -  file: ZooInstaller_256.msi
+  tags:
+  - server
+  dependencies: ~
+  os: windows
+  install_command: |
+    windows.install_msi(files[0].path)
+  upgrade_command: |
+    windows.install_msi(files[0].path, {"LAUNCH_ZOO":"1"}, no_wait=True)
+  uninstall_command: |
+    windows.uninstall_msi_by_name('Helicon Zoo')
+  find_installed_command: |
+    result = windows.get_installed_program("Helicon Zoo")
+    if result:
+      result.install_dir = windows.registry_read("HKLM\\SOFTWARE\\Helicon\\ZooInstaller","InstallDir","32")
+
+

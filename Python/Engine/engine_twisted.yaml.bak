@@ -1,0 +1,47 @@
+
+# This engine is outdated, use HTTP engine instead.
+
+- engine:  Python27TwistedEngine
+  title: Python 2.7 Twisted Engine
+  description: |
+    This engine allows to run WSGI applications over HTTP using Twister server as a backend. Twisted server must be installed in application's virtual environment.
+    APP_WORKER environment variable should point to the WSGI application. This is currently the most powerful engine to run Python applications.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: python-100x100.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    python_dir = core.current.get_product("Python27").parameters['install_dir']
+    engine.config["full_path"] = "{0}\\python.exe".format(python_dir)
+    engine.config["arguments"] = "{0}\\Scripts\\twistd.py -n web --wsgi=%WSGI_APP% --port=%PORT%".format(python_dir)
+    engine.config["environment_variables"]["ENGINE_PATH"] = python_dir
+
+  config:
+    enabled: true
+    full_path: '%ZOO_HOME%\python27\python.exe'
+    arguments: '%ZOO_HOME%\python27\Scripts\twistd.py -n web --wsgi=%WSGI_APP% --port=%PORT%'
+    protocol: http
+    transport: tcp
+    environment_variables:
+        ENGINE_PATH: '%ZOO_HOME%\Python27'
+        PATH: '%ENGINE_PATH%;%PATH%'
+
+
+
+
+- engine: Python27TwistedEngine
+  version: 1.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Python27BasePackage
+
+- engine: Python27TwistedEngine
+  version: 1.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Python27BasePackage

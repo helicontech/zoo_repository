@@ -1,0 +1,70 @@
+- product:  Microsoft.IIS
+  title: Microsoft IIS
+  description: Native web server for Windows
+  link: http://www.iis.net/
+  author: Microsoft
+  eula: http://www.microsoft.com/en-us/legal/intellectualproperty/UseTerms/default.aspx
+  icon: iis-200x200.png
+  tags:
+  - server
+  os: windows
+  webserver: iis
+  dependencies: ~
+  install_command: |
+    windows.install_feature("IIS-WebServerRole")
+    windows.install_feature("IIS-WebServer")
+    windows.install_feature("IIS-CommonHttpFeatures")
+    windows.install_feature("IIS-StaticContent")
+    windows.install_feature("IIS-DefaultDocument")
+    windows.install_feature("IIS-DirectoryBrowsing")
+    windows.install_feature("IIS-HttpErrors")
+    windows.install_feature("IIS-HttpLogging")
+    windows.install_feature("IIS-Security")
+    windows.install_feature("IIS-LoggingLibraries")
+    windows.install_feature("IIS-RequestFiltering")
+    windows.install_feature("IIS-WebServerManagementTools")
+    windows.install_feature("IIS-ManagementConsole")
+    windows.install_feature("IIS-ApplicationDevelopment")
+    windows.install_feature("IIS-NetFxExtensibility")
+    windows.install_feature("IIS-WebServerManagementTools")
+  uninstall_command:
+    windows.uninstall_feature("IIS-WebServerRole")
+    windows.uninstall_feature("IIS-WebServer")
+    windows.uninstall_feature("IIS-CommonHttpFeatures")
+    windows.uninstall_feature("IIS-StaticContent")
+    windows.uninstall_feature("IIS-DefaultDocument")
+    windows.uninstall_feature("IIS-DirectoryBrowsing")
+    windows.uninstall_feature("IIS-HttpErrors")
+    windows.uninstall_feature("IIS-HttpLogging")
+    windows.uninstall_feature("IIS-Security")
+    windows.uninstall_feature("IIS-LoggingLibraries")
+    windows.uninstall_feature("IIS-RequestFiltering")
+    windows.uninstall_feature("IIS-WebServerManagementTools")
+    windows.uninstall_feature("IIS-ManagementConsole")
+    windows.uninstall_feature("IIS-ApplicationDevelopment")
+    windows.uninstall_feature("IIS-NetFxExtensibility")
+    windows.uninstall_feature("IIS-WebServerManagementTools")
+  find_installed_command: |
+    major_version = windows.registry_read("HKLM\\SOFTWARE\\Microsoft\\INETSTP", "MajorVersion")
+    minor_version = windows.registry_read("HKLM\\SOFTWARE\\Microsoft\\INETSTP", "MinorVersion")
+    if major_version:
+      result = InstalledProductInfo()
+      result.version = "{0}.{1}".format(major_version, minor_version)
+      result.install_dir = r"%SystemDrive%\Windows\System32\inetsrv"
+
+
+- product:  Microsoft.IIS
+  webserver: iis
+  version: 7.0
+  os: windows>=6.0,<6.1
+
+- product:  Microsoft.IIS
+  webserver: iis
+  version: 7.5
+  os: windows>=6.1,<6.2
+
+- product:  Microsoft.IIS
+  webserver: iis
+  version: 8.0
+  os: windows>=6.2,<6.3
+

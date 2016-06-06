@@ -1,0 +1,56 @@
+- product: Helicon.Zoo.TomcatValve
+  title: Helicon Zoo Valve for Tomcat.
+  description: |
+    Tomcat Installer configure Tomcat server,
+    install Tomcat service and enable Helicon Tomcat Module
+    provides cooperation between Tomcat Server and IIS Zoo Module.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: helicontech-100x100.png
+  tags:
+  - server
+  dependencies:
+   - Tomcat7
+  os: windows
+  install_command: |
+    install_dir = parameters['install_dir']
+    tomcat_path = core.current.get_product("Tomcat7").parameters['install_dir']
+    os.un7zip(files[0].path, install_dir)
+    print("Copy HeliconZooTomcatValve.jar to Tomcat installation folder")
+    os.copy_file(os.path_join(install_dir, "HeliconZooTomcatValve.jar"), os.path_join(tomcat_path, "lib"))
+    print("Backup Tomcat server.xml")
+    os.copy_file(os.path_join(tomcat_path, r"conf\server.xml"), os.path_join(tomcat_path, "conf\server_zoo_backup.xml"))    
+    print(r"Register HeliconZooTomcatValve.jar in Tomcat's 'server.xml'")
+    os.replace_in_file(os.path_join(tomcat_path, r"conf\server.xml"), r"(\s*</Engine>)", r'\n      <Valve className="com.helicontech.zoo.tomcat.ZooServerValve" />\1')
+    # os.cmd("cscript {0}/install.js tomcat".format(install_dir))
+  upgrade_command: |
+    install_dir = parameters['install_dir']
+    tomcat_path = core.current.get_product("Tomcat7").parameters['install_dir']
+    os.un7zip(files[0].path, install_dir)
+    print("Copy HeliconZooTomcatValve.jar to Tomcat installation folder")
+    os.copy_file(os.path_join(install_dir, "HeliconZooTomcatValve.jar"), os.path_join(tomcat_path, "lib"))
+    print("Since this is upgrade we suppose HeliconZooTomcatValve.jar already registered with Tomcat.")
+    print("No modifications to Tomcat server.xml file made.")
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      install_dir = parameters['install_dir']
+      if os.path_exists(os.path_join(install_dir, "HeliconZooTomcatValve.jar")):
+        result = InstalledProductInfo()
+        result.version = self.version
+        result.install_dir = parameters['install_dir']
+  uninstall_command: |
+    install_dir = parameters['install_dir']
+    tomcat_path = core.current.get_product("Tomcat7").parameters['install_dir']
+    print("Remove HeliconZooTomcatValve.jar registration from Tomcat server.xml")
+    os.replace_in_file(os.path_join(tomcat_path, r"conf\server.xml"), r'\s*<Valve className="com.helicontech.zoo.tomcat.ZooServerValve" />', r"")
+    print("Delete HeliconZooTomcatValve.jar from Tomcat installation folder")
+    os.delete_path(os.path_join(tomcat_path, r"lib\HeliconZooTomcatValve.jar"))
+    # os.cmd("cscript {0}/install.js -tomcat".format(install_dir))
+    os.delete_path(install_dir)
+
+- product:  Helicon.Zoo.TomcatValve
+  version: 1.0.3.42
+  files:
+  - file: HeliconZooTomcatValve.zip
+

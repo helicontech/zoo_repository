@@ -1,0 +1,46 @@
+- product: Mysql
+  title: Mysql Server
+  description: MySQL Community Edition is a freely downloadable version of the world's most popular open source database that is supported by an active community of open source developers and enthusiasts.
+  link: http://www.mysql.com/
+  eula: http://www.gnu.org/licenses/gpl-3.0.html
+  author: Oracle Corporation
+  dependencies: ~
+  icon: mysql-200x200.png
+  tags:
+  - database
+
+- product: Mysql
+  os: windows
+
+  install_command: |
+    result = windows.install_msi(files[0].path,{"INSTALLDIR":parameters['install_dir'], "DATADIR":parameters['install_dir']},  ignore_exit_code=True)
+    if result and result != 1707:
+        raise Exception('Mysql installation error with error code {0}'.format(result))
+    os.cmd(r'"{0}\bin\MySQLInstanceConfig.exe" -q -i "-nMySQL5.5" ServerType=DEVELOPMENT DatabaseType=MIXED ConnectionUsage=DSS Port=3306 ServiceName=MySQL RootPassword="{1}" StrictMode=yes AddBinToPath=yes Charset=UTF8'.format(
+        parameters['install_dir'],
+        parameters['root_password']
+    ),  ignore_exit_code=True)
+  uninstall_command: |
+    windows.uninstall_msi_by_name("MySQL Server 5.5", product.version)
+  find_installed_command: |
+    result = windows.get_installed_program("MySQL Server 5.5")
+    if result:
+      result.install_dir = windows.registry_read("HKLM\\SOFTWARE\\MySQL AB\MySQL Server 5.5", "Location", "")
+  parameters:
+    root_password: 'root'
+- product: Mysql
+  os: windows
+  bitness: 32
+  version: 5.5.46
+  files:
+  - file: http://mysql.mirrors.pair.com/Downloads/MySQL-5.5/mysql-5.5.46-win32.msi
+    md5: 7638809e66214e917eea58acdc8793d9
+
+
+- product: Mysql
+  os: windows
+  bitness: 64
+  version: 5.5.46
+  files:
+  - file: http://mysql.mirrors.pair.com/Downloads/MySQL-5.5/mysql-5.5.46-winx64.msi
+    md5: 3eee15c8262f42412851a0f5028d8cfd

@@ -1,0 +1,18 @@
+- product: Git
+  os: windows
+  version: 1.9.4-preview20140611
+  files:
+  - file: https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe
+    sha1: c2849e1e3ec55e1a11000b7719ace4d9304277a1
+  parameters:
+    install_dir: r'%ProgramFiles(x86)%\Git'
+
+  install_command: |
+    os.cmd(files[0].path + ' /verysilent')
+    windows.add_to_system_path('{0}\\bin.format(parameters['install_dir'])')
+    os.cmd('"{0}\\bin\\git.exe" config --global --add core.autocrlf true'.format(parameters['install_dir']))
+  uninstall_command: |
+    windows.remove_from_system_path('{0}\\bin'.format(parameters['install_dir']) )
+    os.cmd('"{0}\\unins000.exe" /verysilent'.format(parameters['install_dir']) )
+  find_installed_command: |
+    result = windows.get_installed_program("Git version 1.9.4-preview20140611")

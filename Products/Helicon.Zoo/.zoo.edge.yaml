@@ -1,0 +1,7 @@
+# version № must be substituted in version: 1.0.№.0 and file: ...Build/№/artifact/...
+- product: Helicon.Zoo
+  version: 1.0.127.0
+  files:
+  -  file: http://hv/view/Zoo%20v4/job/ZooInstaller%20Build/126/artifact/ZooInstaller/bin/Release/ZooInstaller.msi
+
+

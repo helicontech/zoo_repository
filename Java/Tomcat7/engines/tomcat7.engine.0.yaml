@@ -1,0 +1,57 @@
+- engine:  Tomcat7Engine
+  title: Java on Tomcat 7 Service Engine
+  description: |
+    This engine runs Java applications like WAR or JSP pages on Apache Tomcat server. Only one
+    instance of Apache Tomcat is used to run all applications configured for this engine simultaneously.
+    This is a traditional way of running Java applications, when all applications share same Java process,
+    consuming much less memory. This implementation also introduces security flaw as all applications share
+    same Windows user and thus the same NTFS permissions. Helicon Zoo will connect to the Tomcat instance
+    running on this system and will use Helicon Tomcat Valve to configure or delete applications on Tomcat.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: tomcat-200x200.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    jdk_home = core.current.get_product("Oracle.JDK").parameters['install_dir']
+    java_exe = os.path_join(jdk_home, "bin", "java.exe")
+    if not os.path_exists(java_exe):
+        java_exe = os.path_join(os.get_system_env('JDK_HOME'), "bin", "java.exe")
+        if not os.path_exists(java_exe):
+            java_exe = os.path_join(os.get_system_env('JAVA_HOME'), "bin", "java.exe")
+            if not os.path_exists(java_exe):
+                raise Exception("Oracle Java SE Development Kit NOT FOUND")
+    self.config['full_path'] = java_exe
+  uninstall_command: |
+    pass
+  config:
+    enabled: true
+    full_path: '%JAVA_HOME%\\bin\\java.exe'
+    arguments: ''
+    protocol: 'http'
+    transport: 'tcp.service'
+    host: '127.0.0.1'
+    port_lower: 8080
+    port_upper: 8080
+    min_instances: 1
+    max_instances: 1
+    environment_variables:
+      ZOO_SUBSTITUTE_HOST: 'zoo%INSTANCE_ID%%APPL_ID%'
+
+
+- engine:  Tomcat7Engine
+  version: 1.0.0.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Helicon.Zoo.TomcatValve
+
+
+- engine:  Tomcat7Engine
+  version: 1.0.0.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Helicon.Zoo.TomcatValve

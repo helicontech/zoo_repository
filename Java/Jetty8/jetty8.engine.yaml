@@ -1,0 +1,57 @@
+- engine:  JavaJetty8Engine
+  title: Java on Jetty 8 Engine
+  description: |
+    This engine runs Java applications like WAR or JSP pages using Jetty 8 server. Each application runs it's own Java process, which means 
+    better isolation and security but more memory consumption. Each application has Jetty contexts dir, located at AppRoot\contexts, and webapps
+    dir at AppRoot\webapps. New contexts and webapps are loaded every 5 seconds, so one Zoo Java application may have number of contexts and
+    applications within.
+    If you need to run many Java applications in one global Java process to save memory use Java Tomcat engines provided by Helicon Zoo. 
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: java-100x100.png
+  tags:
+  - engine
+  os: windows
+  dependencies:
+  - Jetty8
+  - Helicon.Zoo.IISModule
+  files:
+    - file: zoo_jetty_config.xml
+    - file: zoo_jetty.ini
+  install_command: |
+    install_dir = parameters['install_dir']
+    jetty_install_dir = core.current.get_product('Jetty8').parameters['install_dir']
+    os.copy_file(files[0].path, os.path_join(jetty_install_dir, r'etc'))
+    os.copy_file(files[1].path, jetty_install_dir)
+    jdk_install_dir = core.current.get_product('Oracle.JDK').parameters['install_dir']
+    self.config['full_path'] = os.path_join(jdk_install_dir,  'bin\\java.exe')
+    self.config["environment_variables"]['JETTY_HOME'] = jetty_install_dir
+  uninstall_command: |
+    jetty_install_dir = core.current.get_product('Jetty8').parameters['install_dir']
+    os.delete_path(os.path_join(jetty_install_dir, r'etc\zoo_jetty_config.xml'))
+    os.delete_path(os.path_join(jetty_install_dir, r'zoo_jetty.ini'))
+  config:
+    enabled: true
+    full_path: '%JDK_HOME%\\bin\\java.exe'
+    arguments: '-Xms128m -Xmx256m -Djetty.home="%JETTY_HOME%" -Djetty.port=%PORT% -jar "%JETTY_HOME%\start.jar" --ini="%JETTY_HOME%\zoo_jetty.ini"'
+    protocol: 'http'
+    transport: 'tcp'
+    environment_variables:
+      JETTY_HOME: '%ZOO_HOME%\Jetty8'
+
+
+- engine:  JavaJetty8Engine
+  version: 1.0.0.0
+  webserver: iis
+  dependencies:
+  - Jetty8
+  - Helicon.Zoo.IISModule
+
+- engine:  JavaJetty8Engine
+  version: 1.0.0.0
+  webserver: iisexpress
+  dependencies:
+  - Jetty8
+  - Helicon.Zoo.IISExpressModule
+ 

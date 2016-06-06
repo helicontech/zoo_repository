@@ -1,0 +1,45 @@
+- product: PHP55
+  title: PHP 5.5
+  description: Php is a widely-used general-purpose scripting language that is especially suited for Web development and can be embedded into HTML.
+  link: http://windows.php.net/
+  eula: http://www.php.net/license/3_01.txt
+  author: Php.net
+  dependencies: ~
+  icon: php-100x100.png
+  tags:
+  - server
+- product: PHP55
+  os: windows
+  version: 5.5.30
+  files:
+  - file: http://windows.php.net/downloads/releases/php-5.5.36-nts-Win32-VC11-x86.zip
+  - file: php55-zoo.ini
+  - file: http://download.microsoft.com/download/1/6/B/16B06F60-3B20-4FF2-B699-5E9B7962F9AE/VSU_4/vcredist_x86.exe
+  install_command: |
+    install_dir = parameters['install_dir']
+    os.un7zip(files[0].path, install_dir)
+    os.copy_file("{0}\\php.ini-production".format(install_dir), "{0}\\php.ini".format(install_dir))
+    os.append_file_str("extension_dir='{0}\\ext'\n".format(install_dir), "{0}\\php.ini".format(install_dir))
+    os.append_file(files[1].path, "{0}\\php.ini".format(install_dir))
+    print("Installing Microsoft Visual C++ 2013 Redistributable")
+    log_path = os.path_join(os.log_dir, "vcredist_x86.log")
+    os.cmd('"{0}" /install /quiet /norestart /log "{1}"'.format( files[2].path, log_path), True)
+  uninstall_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      os.delete_path(parameters['install_dir'])
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      php_exe_path = os.path_join(parameters['install_dir'], 'php.exe')
+      if os.path_exists(php_exe_path):
+        result = InstalledProductInfo()
+        result.version = windows.get_file_version(php_exe_path, parts=3)
+        result.install_dir = parameters['install_dir']
+    else:
+      pf_install_dir = '%ProgramFiles(x86)%\\PHP\\v5.5'
+      if os.path_exists(pf_install_dir):
+        php_exe_path = os.path_join(pf_install_dir, 'php.exe')
+        if os.path_exists(php_exe_path):
+          result = InstalledProductInfo()
+          result.version = windows.get_file_version(php_exe_path, parts=3)
+          result.install_dir = pf_install_dir
+

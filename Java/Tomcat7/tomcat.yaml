@@ -1,0 +1,66 @@
+- product: Tomcat7
+  title: Apache Tomcat 7 Distribution 7
+  description: |
+    Apache Tomcat is an open source software implementation of the Java Servlet and JavaServer Pages technologies.
+    The Java Servlet and JavaServer Pages specifications are developed under the Java Community Process.
+    Apache Tomcat is developed in an open and participatory environment and released under the Apache License version 2.
+    Apache Tomcat is intended to be a collaboration of the best-of-breed developers from around the world.
+    We invite you to participate in this open development project.
+    Apache Tomcat powers numerous large-scale, mission-critical web applications across a diverse range of industries and organizations.
+    Apache Tomcat, Tomcat, Apache, the Apache feather, and the Apache Tomcat project logo are trademarks of the Apache Software Foundation.
+  eula: http://www.apache.org/licenses/LICENSE-2.0.txt
+  author: The Apache Software Foundation
+  dependencies: 
+    - Oracle.JDK
+
+  icon: tomcat-200x200.png
+  tags: ~
+  parameters: ~
+
+- product: Tomcat7
+  os: windows
+  install_command: |
+    install_dir = parameters['install_dir']
+    os.cmd('sc stop tomcat7', ignore_exit_code=True)
+    os.delete_path(install_dir)
+    print("Installing Tomcat")
+    os.cmd('{0} /S /D={1}'.format(files[0].path, install_dir))
+    print("Setting up permissions")
+    os.cmd('icacls "{0}"  /t /grant:r "IIS_IUSRS:(OI)(CI)RX"'.format(install_dir))
+    print('Write install dir and version to registry')
+    windows.registry_write(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'Version', product.version, '32')
+    windows.registry_write(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'Version', product.version, '64')
+    windows.registry_write(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'InstallPath', install_dir, '32')
+    windows.registry_write(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'InstallPath', install_dir, '64')
+    os.cmd('sc stop tomcat7', ignore_exit_code=True)
+    jdk_home = core.current.get_product("Oracle.JDK").parameters['install_dir']
+    tomcat_exe = os.path_join(install_dir, "bin", "tomcat7.exe")
+    os.cmd(r'sc config tomcat7 binpath="{0} //RS//tomcat7 --JavaHome={1}"'.format(tomcat_exe, jdk_home), ignore_exit_code=True)
+    os.cmd('sc start tomcat7', ignore_exit_code=True)
+  uninstall_command: |
+    os.cmd("net stop tomcat7", ignore_exit_code=True)
+    os.cmd(r"{0}\Uninstall.exe /S -ServiceName=\"tomcat7\"".format(parameters['install_dir']))
+    windows.registry_delete(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', '32')
+    windows.registry_delete(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', '64')
+  find_installed_command: |
+    version = windows.registry_read(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'Version', '32')
+    if not version:
+      version = windows.registry_read(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'Version', '64')
+    install_dir = windows.registry_read(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'InstallPath', '32')
+    if not install_dir:
+      install_dir = windows.registry_read(r'HKLM\SOFTWARE\Apache Software Foundation\Tomcat\7.0\Tomcat7', 'InstallPath', '64')
+    if not install_dir:
+      install_dir = windows.registry_read(r'HKLM\SOFTWARE\Apache Software Foundation\Procrun 2.0\Tomcat7\Parameters\Start', 'WorkingPath', '32')
+    if install_dir and os.path_exists(install_dir):
+      result = InstalledProductInfo()
+      result.version = version
+      result.install_dir = install_dir
+
+
+- product: Tomcat7
+  os: windows
+  version: 7.0.69
+  files:
+  - file: http://www-us.apache.org/dist/tomcat/tomcat-7/v7.0.69/bin/apache-tomcat-7.0.69.exe
+    sha1: 373d5a167b11e9541ac14b1bc738e4564ede94b3
+

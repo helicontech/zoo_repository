@@ -1,0 +1,45 @@
+- application:  Perl512Project
+  title: Perl 5.12 Project
+  description: |
+    Sample Perl project that include PSGI/Plack example, simple FastCGI example and
+    generic HTTP example with instructions how to set up your application. It also includes instructions
+    how to configure Dancer or Mojolicious on ot. 
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: perl-100x100.png
+  tags:
+  - template
+  os: windows
+  dependencies:
+  - or:
+    - Perl512.PlackEngine
+    - Perl512.HttpEngine
+    - Perl512.CgiEngine
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.chdir(install_path)
+  engines:
+  - engine: Perl512.PlackEngine
+    path: "*"
+    environment_variables:
+      PROXYPASS: "%APPL_VIRTUAL_PATH%"
+      PSGI_WORKER: "plack_sample.pl"
+  - engine: Perl512.HttpEngine
+    path: "*"
+    environment_variables:
+      PROXYPASS: "%APPL_VIRTUAL_PATH%"
+      HTTP_WORKER: "http_sample.pl"
+  - engine: Perl512.CgiEngine
+    path: ".pl"
+  
+  locations:
+  - engine: selected-engine
+    path: "*"
+
+- application:  Perl512Project
+  version: 1.0
+  files:
+  - file: template-1.zip

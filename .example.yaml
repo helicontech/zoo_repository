@@ -1,0 +1,254 @@
+
+# ID продукта, должнен быть уникален, чувствителен к регистру,
+# используется для ссылаться на него, например, в зависимостях
+- product: ProductId
+  # Человеческое Название
+  title: Synopsis
+  # Версия
+  version: 1.0.0.0
+  # Описание продукта
+  description: |
+    Long description.
+  # Ссылка на сайт продукта
+  link: http://www.helicontech.com/zoo/
+  # Ссылка на лицензцию
+  eula: http://www.helicontech.com/zoo/license.html
+  # Имя автора продукта, компания, человек или группа людей
+  author: Helicon Tech
+  # Локальный путь или урл к иконке продука
+  icon: ruby-100x100.png
+  # Список тегов, это категории для фильтрации продуктов в UI
+  tags:
+  - server
+  - cms
+  - engine
+  - database
+  - blog
+  - framework
+
+  # Следующие аттрибуты os, bitness, webserver и lang вметсе образуют платформу,
+  # по которой продукты фильтруются
+
+  # ОС: пока  только windows, можно указывать версию, например os: windows>=6.0
+  os: windows
+  # Битность операционной системы. для которой подходить этот продукт  32 | 64
+  bitness: 32
+  # Цедевой веб сервер, чаще всего для энжинов: iis | iisexpress
+  webserver: iis
+  # язык, локализация продукта, пока не используется вообще
+  lang: en
+
+  # Древовоидный список зависимости от других продуктов.
+  # По-умолчанию продукты списке соединяются с помощью 'and',
+  # т.е зависимость от всех перечисленных продуктов.
+  # После элемента 'and' список обязательных продуктов.
+  # После элемента 'or' — список продуктов, из которых должен быть выбран один.
+  # Устанавливатся продукты будут в порядке обратном, в котором они всетрчаются в списке.
+  # Можно указывать условие по версии
+  dependencies:
+    - ProductId1>=1.00
+    - ProductId2==1.1.1.1
+    - or:
+      - Engine1
+      - or:
+        - IIS
+        - Wer
+      - ProductId5
+      - and:
+        - ProductId6
+        - ProductId7
+    - ProductId3
+
+
+  # команда, исполняется после того как файлы скачаны. Утанавливает продукт
+  install_command: |
+
+      # путь, в который устанавливается продукт
+      install_path =  parameters['install_dir']
+      # путь, в который устанавливается приложение
+      install_path =  parameters['physical-path']
+
+      # известные параметры, которые могут быть в словаре parameters
+      # 'create-site' - True|False
+      # 'site-name'
+      # 'site-binding'
+      # 'create-app' - True|False
+      # 'app-name'
+      # 'create-app-pool'  - True|False
+      # 'app-pool-name'
+      # 'app-pool-dot-net'
+      # 'physical-path' - полный путь апликейшина в иисе, куда разворачивается приложение
+      # 'install_dir'  - полный путь куда будет ставится продукт, зависит от ZOO_INSTALL_DIR
+      # 'db-engine'
+      # 'db-host'
+      # 'db-port'
+      # 'db-username'
+      # 'db-password'
+      # 'db-name'
+
+      # os.cmd — выполнить команду,
+      # пример: дать NTFS права на папку приложению, игнорировать ошибки
+      os.cmd('icacls "{0}" /t /grant:r "IIS_IUSRS:(OI)(CI)RX"'.format(parameters['install_dir']), ignore_exit_code=True)
+
+      # удалить папку и все подпапки
+      os.delete_path(path)
+
+      # скопировать файл
+      os.copy_file(source, dest)
+
+      # дописать в файл dest содержимое source
+      os.append_file(source, dest)
+
+      # распаковать архив path в destination, source_internal_dir — папка внтури архива
+      os.un7zip(path, destination, source_internal_dir=None)
+      # Примеры:
+      # разархивирвать из скачаного файла в папку приложения не весь архив, а только папку  "coldbox"
+      os.un7zip(files[0].path, install_path, "coldbox")
+      # просто разархивировать  весь архив в указанный путь
+      os.un7zip(files[0].path, parameters['install_dir'])
+
+      # установить глобальную переменную окружения, для всей ОС, не для текущего процесса. Записывает прямо в реестр
+      os.set_system_env(name, value)
+      os.set_system_env('JDK_HOME', jdkhome)
+
+      # удалить глобальную переменную окружения, удаляет прямо из реестра
+      os.remove_system_env (name)
+      os.remove_system_env('JDK_HOME')
+
+      # сменить директорию для текущего процесса.
+      os.chdir(path)
+       # создать папки для всего пути в path, например c:\inetpub\wwwroot\site-name\application\folder
+      os.make_dir(path)
+      # проверить есть ли такой путь, диретокрия или файл
+      os.path_exists(path)
+
+      # прочитать и вернуть из реестра, bitness "32"|"64"
+      windows.registry_read(path, name, bitness=None)
+      # пример:
+      windows.registry_read("HKLM\\SOFTWARE\\Helicon\\ZooInstaller","InstallDir","32")
+
+      # установка msi пекета с парамтерами
+      windows.install_msi(msi_path, optional_parameters: dict=None, ignore_exit_code=False, no_wait=False)
+      windows.install_msi(files[0].path, {"TARGETDIR":parameters['install_dir']})
+      # optional_parameters = словарь параметров которые нужно передать в msiexec разворачивается в PROPERTY=PropertyValue  PROPERTY2=PropertyValue2
+      # ignore_exit_code - некоторые инсталяшки возвращают неправильные коды ошибок
+      # пример:
+      result = windows.install_msi(files[0].path, ignore_exit_code=True)
+      if result and result != 1707:
+        raise Exception('Mysql installation error with error code {0}'.format(result))
+      # no_wait - нужен для самообновления Zoo морды, после стара процесса не ждет окончания
+      # Пример:
+
+      # анинсталить конкретный Msi пакет, msi_path - полный путь к msi
+      windows.uninstall_msi(msi_path, ignore_exit_code=False)
+
+      # анинсталить msi по гуиду, который ищется по имени в реестре, у add-remove programs
+      # name - string|regex
+      # version - string, необязательный параметр, указывает точную версию для анинстала
+      windows.uninstall_msi_by_name(name, version=None)
+      # Пример:
+      windows.uninstall_msi_by_name("Microsoft .NET Framework 4.5.1")
+      windows.uninstall_msi_by_name(re.compile(r"Strawberry\s+Perl\s+\(64.*\)", re.I), self.version)
+
+      # найти в у add-remove programs программу по имени
+      windows.get_installed_program (name, version=None)
+      # name - string|regex
+      # version - string, необязательный параметр, указывает точную версию
+      # возвращает объект InstalledProductInfo
+      # пример:
+      result = windows.get_installed_program(re.compile("Java SE Development Kit 7 Update \d+ \(64-bit\)", re.I))
+
+      # установить фичу windows
+      windows.install_feature("IIS-WebServerRole")
+      # удалить фичу
+      windows.uninstall_feature("IIS-WebServerRole")
+
+      # дать NTFS права на запись
+      windows.set_write_permission(path, user_or_group)
+      windows.set_write_permission('log', 'IIS_IUSRS')
+
+      # для бинарного файла получить версию
+      windows.get_file_version(filename, parts=None)
+      #    parts - сколько групп вернуть,
+      #    3 = "1.2.3"
+      #    2 = "1.2"
+      #    1 = "1"
+      result.version = windows.get_file_version(parameters['install_dir'] + '\\php.exe', parts=3)
+
+      # добавить в системную переменную PATH еще один путь, пишет прямо в реестр
+      windows.add_to_system_path(path)
+      # пример:
+      windows.add_to_system_path('{0}\\bin.format(parameters['install_dir'])')
+
+      # удалить путь из системного PATH, зменяет прямо в реестре
+      windows.remove_from_system_path(path)
+      windows.remove_from_system_path('{0}\\bin'.format(parameters['install_dir']) )
+
+      # помощник для приложений на питоне:
+      # создать окружение питона по указанному пути
+      python.create_virtual_env(install_path)
+
+
+
+
+  # если указан апгрейд, то продукт можно обновлять (необязательная команда)
+  upgrade_command: |
+      # тут возможно использовать все те же вызовы что и в install_command
+      os.un7zip(files[0].path, parameters['install_dir'])
+
+
+  # команда для удаления продукта
+  uninstall_command: |
+      # тут возможно использовать все те же вызовы что и в install_command
+      os.delete_path(parameters['install_dir'])
+
+
+  # команда которая ищет, установлен ли продукт.
+  # должна создать локальный объект с именем result типа InstalledProductInfo
+  find_installed_command: |
+      # тут возможно использовать все те же вызовы что и в install_command
+      if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+        result = InstalledProductInfo()
+        result.version = product.version
+        result.install_dir = parameters['install_dir']
+      # или так:
+      result = windows.get_installed_program("Helicon Zoo IIS7 module v4")
+      # или так:
+      result = windows.get_installed_program(re.compile(r"Python\s+2\.7\.5\.*", re.I))
+      if result:
+        result.version = '2.7.5'
+        result.install_dir = windows.registry_read("HKLM\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath","","32")
+
+
+  # список файлов необходимых для установки этого продукта,
+  # будут скачены и положены в кеш до того как будет запущена 'install_command'
+  # скачанные файлы доступны в объекте files в install_command
+  # пример: files5[0].path
+  files:
+
+  # локальный файл, путь отоноительно текущего yaml-файла
+  - file: file1.zip
+
+  # url
+  - file: http://dist.codehaus.org/jetty/jetty-hightide-7.6.7/jetty-hightide-7.6.7.v20120910.zip
+
+  # url с проверкой crc скачанного файла по md5 или sha1
+  - file: http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi
+    md5: 0006d6219160ce6abe711a71c83ebb0
+    sha1: a482e48e151cff76dcc1479b9efc367da8fb66a7
+
+  # если в урле файла нет имени, то иям файла (с которым оно будет сохранено в кеше) нужно указать явно
+  - file: http://go.microsoft.com/fwlink/?LinkId=321332
+    filename: NDP451-KB2858728-x86-x64-AllOS-ENU.exe
+
+
+  # наибролее сложный случай, указываем куки для скачивания JDK
+  - file: http://download.oracle.com/otn-pub/java/jdk/7u11-b21/jdk-7u11-windows-i586.exe
+    sha1: a482e48e151cff76dcc1479b9efc367da8fb66a7
+    cookies:
+      - s_cc: "true"
+        oraclelicense: accept-securebackup-cookie
+        s_nr: "1395934850788"
+        gpw_e24: http%3A%2F%2Fwww.oracle.com%2Ftechnetwork%2Fjava%2Fjavase%2Fdownloads%2Fjdk7-downloads-1880260.html;
+        s_sq: "%5B%5BB%5D%5D"
+

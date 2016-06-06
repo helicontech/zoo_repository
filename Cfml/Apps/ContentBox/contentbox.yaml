@@ -1,0 +1,48 @@
+- application: Contentbox
+  title: ContentBox
+  description: A powerful modular content management engine
+  author:  Luis Majano & Ortus Solutions
+  link: http://www.gocontentbox.org/
+  eula: https://raw.github.com/Ortus-Solutions/ContentBox/master/license.txt
+  icon: contentbox-150x150.png
+  tags:
+  - framework
+
+- application: Contentbox
+  os: windows
+  dependencies:
+  - or:
+    - Railo4Jetty8Engine
+    - Railo4OnTomcat7Engine
+  version: 1.5.3
+  files:
+  - file: http://www.gocontentbox.org/builds/contentbox_1.5.3.zip
+  - file: web.config.txt
+    filename: web.config
+  - file: WEB-INF/web.xml
+  install_command: |
+    install_path = iis.map_webserver_path(parameters['virtual_path'])
+    python.create_virtual_env(install_path)
+    os.chdir(install_path)
+    os.un7zip(files[0].path, install_path)
+    os.copy_file(files[1].path, install_path)
+    os.copy_file(files[2].path, install_path + r"\WEB-INF")
+    os.make_dir('logs')
+    windows.set_write_permission('log', 'IIS_IUSRS')
+    os.make_dir('temp')
+    windows.set_write_permission('temp', 'IIS_IUSRS')
+  parameters:
+    virtual_path: ~
+  engines:
+    - engine: Railo4Jetty8Engine
+      path: "*"
+      environment_variables:
+        ERROR_LOG_DIR: "logs"
+        TEMP: "temp"
+        TMP: "temp"
+    - engine: Railo4OnTomcat7Engine
+      path: "*"
+      environment_variables:
+        ERROR_LOG_DIR: "logs"
+        TEMP: "temp"
+        TMP: "temp"

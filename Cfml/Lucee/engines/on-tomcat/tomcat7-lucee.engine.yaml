@@ -1,0 +1,55 @@
+- engine:  LuceeOnTomcat7Engine
+  title: Lucee on Tomcat 7 Service Engine
+  description: |
+    This engine runs CFML applications with Lucee on Apache Tomcat server. Only one
+    instance of Apache Tomcat is used to run all applications configured for this engine simultaneously.
+    This is a traditional way of running Java applications, when all applications share same Java process,
+    consuming much less memory. This implementation also introduces security flaw as all applications share
+    same Windows user and thus the same NTFS permissions. Helicon Zoo will connect to the Tomcat instance
+    running in the system and will use Helicon Tomcat Valve to launch applications on Tomcat.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: lucee.jpg
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    lucee = core.current.get_product("Lucee")
+    if 'port' in lucee.parameters:
+        lucee_port = lucee.parameters['port']
+        self.config.port_lower = lucee_port
+        self.config.port_upper = lucee_port    
+  uninstall_command: |
+    pass
+  config:
+    enabled: true
+    full_path: '%JDK_HOME%\\bin\\java.exe'
+    arguments: ''
+    protocol: 'http'
+    transport: 'tcp.service'
+    host: '127.0.0.1'
+    port_lower: 8888
+    port_upper: 8888
+    min_instances: 1
+    max_instances: 1
+    environment_variables:
+      ZOO_SUBSTITUTE_HOST: 'zoo%INSTANCE_ID%%APPL_ID%'
+
+
+- engine:  LuceeOnTomcat7Engine
+  version: 1.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - Lucee.TomcatValve
+
+
+
+- engine:  LuceeOnTomcat7Engine
+  version: 1.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - Lucee.TomcatValve
+

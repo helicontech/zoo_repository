@@ -1,0 +1,26 @@
+- product:  Microsoft.ADK
+  title: Windows Assessment and Deployment Kit
+  description: |
+      The Windows Assessment and Deployment Kit (Windows ADK) is a collection
+      of tools that you can use to customize, assess, and deploy Windows operating
+      systems to new computers.
+  link: https://www.microsoft.com/en-au/download/details.aspx?id=39982
+  author: Microsoft
+  eula: http://www.microsoft.com/en-us/legal/intellectualproperty/UseTerms/default.aspx
+  icon: gears_200.png
+  version: 1.0
+  tags:
+  - server
+  os: windows
+  files:
+     - file: https://download.microsoft.com/download/6/A/E/6AEA92B0-A412-4622-983E-5B305D2EBE56/adk/adksetup.exe
+  dependencies: ~
+  install_command: |
+     os.cmd(r'{0} /q /l "%LOG_DIR%\windows_adk_install.log"'.format(files[0].path))
+  uninstall_command: ~
+  find_installed_command: |
+    if os.path_exists('%SystemRoot%\System32\dism.exe') or windows.get_installed_program('Windows ADK'):
+      result = InstalledProductInfo()
+      result.version = '1.0'
+
+

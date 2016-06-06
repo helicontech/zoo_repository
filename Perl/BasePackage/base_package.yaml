@@ -1,0 +1,34 @@
+- product:  Perl512BasePackage
+  title: Perl 5.12 Base Package
+  description: |
+    Complete environment for hosting Perl applications which include Plack, PSGI support for IIS, and various useful modules.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: perl-100x100.png
+  tags:
+  - server
+  os: windows
+  dependencies:
+  - Strawberry.Perl512
+  install_command: |
+    perl_dir = os.path_join(core.current.get_product("Strawberry.Perl512").parameters['install_dir'],"perl","site")
+    os.un7zip(files[0].path, perl_dir)
+  upgrade_command: |
+    perl_dir =  os.path_join(core.current.get_product("Strawberry.Perl512").parameters['install_dir'],"perl","site")
+    os.un7zip(files[0].path, perl_dir)
+  uninstall_command: |
+    perl_dir =  os.path_join(core.current.get_product("Strawberry.Perl512").parameters['install_dir'],"perl","site")
+    os.delete_path(r"{0}\base_package_version.txt".format(perl_dir))
+  find_installed_command: |
+    perl_product = core.current.get_product("Strawberry.Perl512")
+    if perl_product and 'install_dir' in perl_product.parameters:
+      perl_dir = os.path_join(core.current.get_product("Strawberry.Perl512").parameters['install_dir'],"perl","site")
+      if os.path_exists(os.path_join(perl_dir, 'base_package_version.txt')):
+        result = InstalledProductInfo()
+        result.version = product.version
+        result.install_dir = perl_dir
+- product:  Perl512BasePackage
+  version: 1.0.0.0
+  files:
+  - file: Perl512_BasePackages-01.zip

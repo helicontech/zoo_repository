@@ -1,0 +1,62 @@
+- application:  Ruby_Redmine
+  title: Redmine 3.1
+  version: 3.1.1
+  description: |
+    Redmine is a flexible project management web application written using Ruby on Rails framework.
+    This installation will be configured to use SQLite3 database engine.
+    After installation is completed please use following credentials to log in:
+    login: admin
+    password: admin
+  link: http://www.redmine.org/
+  author: Jean-Philippe Lang
+  eula: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+  icon: redmine.png
+  tags:
+  - development
+  os: windows
+
+  files:
+  - file: http://www.redmine.org/releases/redmine-3.1.1.zip
+    md5: 7e486d388e49897c9dd576fcab967697
+  - file: patch.zip
+
+  dependencies:
+  - or:
+    - Ruby.2.1.FCGI.Engine
+    - Ruby.2.1.HTTP.Engine
+
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path, 'redmine-3.1.1')
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.un7zip(files[1].path, os.path_join(install_path, 'config'))
+    os.chdir(install_path)
+    print("Doing 'bundle install'")
+    os.cmd(r'bundle install --without development test rmagick')
+    os.cmd(r'rake --trace db:create')
+    os.cmd(r'rake --trace generate_secret_token')
+    os.cmd(r'rake --trace db:migrate')
+    os.cmd(r'rake --trace redmine:load_default_data')
+
+
+  locations:
+  - path: 'public'
+    engine: none
+  - path: '*'
+    engine: selected-engine
+
+  engines:
+
+  - engine: Ruby.2.1.FCGI.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"
+      REDMINE_LANG: 'en'
+
+  - engine: Ruby.2.1.HTTP.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"
+      REDMINE_LANG: 'en'

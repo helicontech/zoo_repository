@@ -1,0 +1,15 @@
+- product: Node.js
+  bitness: 32
+  version: 0.10.28
+  files:
+  - file: http://nodejs.org/dist/v0.10.28/node-v0.10.28-x86.msi
+
+
+- product: Node.js
+  bitness: 64
+  version: 0.10.28
+  files:
+  - file: http://nodejs.org/dist/v0.10.28/x64/node-v0.10.28-x64.msi
+    sha1: 6122b245f2237268a3ad10e8b008752888713906
+
+

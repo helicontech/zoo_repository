@@ -1,0 +1,25 @@
+- product: Helicon.Zoo.IISExpressModule
+  title: Helicon Zoo module for IIS Express
+  description: |
+    The core of Helicon Zoo technology is Helicon Zoo Module.
+    It allows running all these engines and applications under IIS server.
+    Basically, Helicon Zoo Module is a load balancing HTTP/FastCGI proxy
+    with built-in process manager and some other features to help hosting applications under IIS.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: helicontech-100x100.png
+  tags:
+  - server
+  os: windows
+  webserver: iisexpress
+  dependencies:
+  - Microsoft.IISExpress
+  install_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  upgrade_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  find_installed_command: |
+    result = windows.get_installed_program("Helicon Zoo IIS7 Express module v4")
+  uninstall_command: |
+    windows.uninstall_msi_by_name('Helicon Zoo IIS7 Express module v4', product.version)

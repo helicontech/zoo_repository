@@ -1,0 +1,34 @@
+- product: Lucee
+  title: Lucee on Tomcat
+  description: A light-weight dynamic scripting language for the JVM that enables the rapid
+               development of simple to highly sophisticated web applications.
+  link: http://lucee.org/
+  eula: http://www.gnu.org/licenses/lgpl-2.1.html
+  author: Lucee Association Switzerland
+  dependencies:
+    - Oracle.JDK
+  icon: lucee.jpg
+  tags:
+  - framework
+
+- product: Lucee
+  os: windows
+  parameters:
+    port: '8888'
+    admin_password: admin
+  install_command: |
+    os.delete_path(parameters['install_dir'])
+    os.cmd(r'{0} --mode unattended --prefix {1} --luceepass {2} --tomcatport {3} --startatboot yes --installconn false --installer-language en --installiis false --debugtrace "%LOG_DIR%\lucee5.0_install.log"'.format(files[0].path, parameters['install_dir'], parameters['admin_password'], parameters['port']))
+    os.cmd(r'icacls "{0}" /t /grant:r "IIS_IUSRS:(OI)(CI)RX"'.format(parameters['install_dir']), ignore_exit_code=True)
+  uninstall_command: |
+    os.cmd(r'{0}\\uninstall.exe --mode unattended --installer-language en --debugtrace "%LOG_DIR%\lucee5.0_install.log"'.format(parameters['install_dir']) )
+  find_installed_command: |
+    result = windows.get_installed_program("Lucee")
+
+
+
+- product: Lucee
+  os: windows
+  version: 5.0
+  files:
+  - file: http://cdn.lucee.org/downloader.cfm/id/156/file/lucee-5.0.0.252-pl0-windows-installer.exe

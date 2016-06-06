@@ -1,0 +1,24 @@
+- product: Helicon.Zoo.TomcatModuleForRailo
+  title: Helicon Zoo Module for Tomcat in Railo
+  description: |
+    Tomcat Installer configure Tomcat server,
+    install Tomcat service and enable Helicon Tomcat Module
+    provides cooperation between Tomcat Server and IIS Zoo Module.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: helicontech-100x100.png
+  tags:
+  - server
+  dependencies:
+   - Railo4
+  os: windows
+  install_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  upgrade_command: |
+    windows.install_msi(files[0].path, {"INSTALLDIR":parameters['install_dir']})
+  find_installed_command: |
+    result = windows.get_installed_program("Helicon Zoo plugin for Railo")
+  uninstall_command: |
+    windows.uninstall_msi_by_name('Helicon Zoo plugin for Railo', product.version)
+

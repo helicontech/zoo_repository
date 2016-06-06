@@ -1,0 +1,44 @@
+- engine:  AspNet35Engine
+  title: AspNet 3.5 Engine
+  version: 1.0
+  description: |
+    ASP.NET энжайн. Zoo модуль ничего про него не знает, воркера нет, нужно чтобы пул ииса был в нужном режиме.
+    энжайн просто устанавливает зависимость и регистрирует asp.net  в иисе
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: aspnet-100x100.png
+  tags:
+  - engine
+  webserver: iis
+  os: windows
+  dependencies:
+  - AspNet35
+#  install_command: |
+#    engine.config["full_path"] = core.current.get_product("Erlang59").parameters['install_dir'] + r"\bin\erl.exe"
+#  config:
+#    enabled: true
+#    full_path: r"%SystemDrive%\erl5.9\bin\erl.exe"
+#    arguments: "+P 10000000 -pa ./ebin ./deps/erlang-oauth/ebin ./deps/mochiweb/ebin ./deps/webmachine/ebin -boot start_sasl -sasl errlog_type error -s zotonic"
+#    protocol: "http"
+#    transport: "tcp"
+#    max_instances: 1
+
+
+
+- engine:  AspNet45Engine
+  title: AspNet 4.5 Engine
+  version: 1.0
+  description: |
+    ASP.NET энжайн. Zoo модуль ничего про него не знает, воркера нет, нужно чтобы пул ииса был в нужном режиме.
+    энжайн просто устанавливает зависимость и регистрирует asp.net  в иисе
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: aspnet-100x100.png
+  tags:
+  - engine
+  webserver: iis
+  os: windows
+  dependencies:
+  - AspNet45

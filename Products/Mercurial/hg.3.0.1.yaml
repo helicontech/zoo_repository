@@ -1,0 +1,31 @@
+- product: Mercurial
+  os: windows
+  bitness: 32
+  version: 3.0.1
+  files:
+  - file: http://mercurial.selenic.com/release/windows/mercurial-3.0.1-x86.msi
+    sha1: 26261c230668afdeac7a3f96caf4cf917dc2c839
+  find_installed_command: |
+    result = windows.get_installed_program(re.compile(r"Mercurial.*", re.I))
+    if result:
+      result.install_dir = windows.registry_read(r"HKCU\Software\Mercurial\InstallDir","","32")
+  uninstall_command: |
+    windows.uninstall_msi_by_name(re.compile(r"Mercurial.*", re.I), product.version)
+
+
+
+
+- product: Mercurial
+  os: windows
+  bitness: 64
+  version: 3.0.1
+  files:
+  - file: http://mercurial.selenic.com/release/windows/mercurial-3.0.1-x64.msi
+    sha1: 2b957078c601df979836d6712fc9f0a9498ee5d2
+  find_installed_command: |
+    result = windows.get_installed_program(re.compile(r"Mercurial.*\(x64\)", re.I))
+    if result:
+      result.install_dir = windows.registry_read(r"HKCU\Software\Mercurial\InstallDir","","64")
+  uninstall_command: |
+    windows.uninstall_msi_by_name(re.compile(r"Mercurial.*\(x64\)", re.I), product.version)
+

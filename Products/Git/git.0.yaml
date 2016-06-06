@@ -1,0 +1,12 @@
+- product: Git
+  title: Git
+  description: |
+    Git is a free and open source distributed version control system
+    designed to handle everything from small to very large projects with speed and efficiency.
+  link: http://git-scm.com/
+  author: Git Contributors
+  eula: https://raw.githubusercontent.com/git/git/master/LGPL-2.1
+  dependencies: ~
+  icon: git-200x200.png
+  tags:
+  - development

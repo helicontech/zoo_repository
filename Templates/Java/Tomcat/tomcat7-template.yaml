@@ -1,0 +1,26 @@
+- application:  JavaTomcatTemplate
+  title: Java project on Tomcat server
+  description: |
+    Run WAR or JSP projects on Tomcat 7
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: tomcat-200x200.png
+  tags:
+  - template
+  os: windows
+  dependencies: []
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+  engines:
+  - engine: Tomcat7Engine
+    path: '*'
+    environment_variables: []
+
+
+- application:  JavaTomcatTemplate
+  version: 1.0.0.0
+  files:
+  - file: tomcat7-template-1.zip

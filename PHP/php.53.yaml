@@ -1,0 +1,45 @@
+- product: PHP53
+  title: PHP 5.3
+  description: Php is a widely-used general-purpose scripting language that is especially suited for Web development and can be embedded into HTML.
+  link: http://windows.php.net/
+  eula: http://www.php.net/license/3_01.txt
+  author: Php.net
+  dependencies: ~
+  icon: php-100x100.png
+  tags:
+  - server
+
+
+- product: PHP53
+  os: windows
+  version: 5.3.28
+  files:
+  - file: http://sourceforge.net/projects/phpinstallermsi/files/zip/php-5.3.28-nts-Win32-VC9-x86.zip/download
+    filename: php-5.3.28-nts-Win32-VC9-x86.zip
+    sha1: 84013dd4b96bc456953f780d4ea329acc3455d06
+  - file: php53-zoo.ini
+  parameters:
+    ~
+  install_command: |
+    os.un7zip(files[0].path, parameters['install_dir'])
+    os.copy_file(parameters['install_dir'] + '\\php.ini-production', parameters['install_dir'] + '\\php.ini')
+    os.append_file_str("extension_dir='"+parameters['install_dir']+"\\ext'\n", parameters['install_dir'] + '\\php.ini')
+    os.append_file(files[1].path, parameters['install_dir'] + '\\php.ini')
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      php_exe_path = os.path_join(parameters['install_dir'], 'php.exe')
+      if os.path_exists(php_exe_path):
+        result = InstalledProductInfo()
+        result.version = windows.get_file_version(php_exe_path, parts=3)
+        result.install_dir = parameters['install_dir']
+    else:
+      pf_install_dir = '%ProgramFiles(x86)%\\PHP\\v5.3'
+      if os.path_exists(pf_install_dir):
+        php_exe_path = os.path_join(pf_install_dir, 'php.exe')
+        if os.path_exists(php_exe_path):
+          result = InstalledProductInfo()
+          result.version = windows.get_file_version(php_exe_path, parts=3)
+          result.install_dir = pf_install_dir
+

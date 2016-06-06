@@ -1,0 +1,12 @@
+- product:  Helicon.Zoo.TomcatModuleForRailo
+  version: 1.0.3.42
+  bitness: 32
+  files:
+  - file: HeliconZooRailoValve_42_x86.msi
+
+- product:  Helicon.Zoo.TomcatModuleForRailo
+  version: 1.0.3.42
+  bitness: 64
+  files:
+  - file: HeliconZooRailoValve_42_x64.msi
+

@@ -1,0 +1,12 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+  <Set name="contextPath"><Env name="APPL_VIRTUAL_PATH" default="/" /></Set>
+  <Set name="resourceBase"><Env name="APPL_PHYSICAL_PATH" /><Env name="APPL_RESOURCE_DIR" default="" /></Set>
+  <Set name="defaultsDescriptor">file:///%INSTALL_DIR%/etc/webdefault.xml</Set>
+  <!-- <Set name="overrideDescriptor"><SystemProperty name="jetty.home" default="."/>/contexts/test.d/override-web.xml</Set> -->
+
+</Configure>
+

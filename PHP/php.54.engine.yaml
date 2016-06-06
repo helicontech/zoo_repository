@@ -1,0 +1,47 @@
+- engine: Php54Engine
+  title: PHP 5.4 Engine
+  description: |
+    This engine allows to run PHP 5.4 applications. It uses load balanced workers and works over Fast-CGI
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  icon: php-100x100.png
+  tags:
+  - engine
+  os: windows
+  install_command: |
+    php_dir = core.current.get_product("PHP54").parameters['install_dir']
+    self.config["install_dir"] = php_dir
+    self.config["environment_variables"]["ENGINE_PATH"] = php_dir
+    self.config["full_path"] = "{0}\php-cgi.exe".format(php_dir)
+
+  config:
+    enabled: true
+    install_dir: ~
+    full_path: '%ENGINE_PATH%\php-cgi.exe'
+    arguments: '-c "%PHP_INI%"'
+    protocol: 'fastcgi-php'
+    transport: NamedPipe
+    environment_variables:
+      ENGINE_PATH: '%ZOO_HOME%\PHP54'
+      PATH: '%ENGINE_PATH%;%PATH%'
+      PHP_FCGI_MAX_REQUESTS: '100000'
+      ERROR_LOG_DIR: 'NULL'
+      WATCH_FILE_CHANGES_MASK: 'php.ini'
+      PHP_INI: '%APPL_PHYSICAL_PATH%\php.ini'
+
+
+- engine: Php54Engine
+  version: 1.0
+  webserver: iis
+  dependencies:
+  - Helicon.Zoo.IISModule
+  - PHP54
+
+
+- engine: Php54Engine
+  version: 1.0
+  webserver: iisexpress
+  dependencies:
+  - Helicon.Zoo.IISExpressModule
+  - PHP54

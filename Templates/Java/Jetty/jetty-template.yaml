@@ -1,0 +1,30 @@
+- application:  JavaJettyTemplate
+  title: Java project on Jetty server
+  description: |
+    Run Java WAR or JSP projects on Jetty 7 or 8
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: java-100x100.png
+  tags:
+  - template
+  os: windows
+  dependencies:
+  - or:
+    - JavaJetty8Engine
+    - JavaJetty7Engine
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+  engines:
+  - engine: JavaJetty8Engine
+    path: '*'
+  - engine: JavaJetty7Engine
+    path: '*'
+
+
+- application:  JavaJettyTemplate
+  version: 1.0.0.0
+  files:
+  - file: jetty-template-1.zip

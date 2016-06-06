@@ -1,0 +1,51 @@
+- product:  Python27BasePackage
+  title: Python 2.7 Base Package
+  description: |
+    Additional packages for hosting Python applications which include easy_install, pip, virtualenv and PyWin32.
+  link: http://www.helicontech.com/zoo/
+  eula: http://www.helicontech.com/zoo/license.html
+  author: Helicon Tech
+  version: 1.0
+  icon: python-100x100.png
+  tags:
+  - server
+  os: windows
+  files:
+  - file: pywin32-219.win32-py2.7.exe
+  - file: python27.base_package.txt
+  - file: http://twistedmatrix.com/Releases/Twisted/15.4/Twisted-15.4.0.win32-py2.7.msi
+  dependencies:
+  - Python27
+  install_command: |
+    python_dir = core.current.get_product('Python27').parameters['install_dir']
+    os.chdir(os.path_join(python_dir, 'scripts'))
+    os.cmd(r"easy_install.exe virtualenv")
+    os.cmd(r"easy_install.exe {0}".format(files[0].path), True)
+    os.cmd(r"pip install tornado")
+    os.cmd(r"pip install wfastcgi")
+    windows.install_msi(files[2].path)
+    os.copy_file(files[1].path, python_dir)
+  upgrade_command: |
+    python_dir = core.current.get_product('Python27').parameters['install_dir']
+    os.chdir(os.path_join(python_dir, 'scripts'))
+    os.cmd(r"easy_install.exe virtualenv")
+    os.cmd(r"easy_install.exe {0}".format(files[0].path), True)
+    os.cmd(r"pip install tornado")
+    os.cmd(r"pip install wfastcgi")
+    windows.install_msi(files[2].path)
+    os.copy_file(files[1].path, python_dir)
+  uninstall_command: |
+    print(" WARNING: Cannot uninstall Python Base Package from existing Python installation.")
+    print("          You need to uninstall Python entirely to start from clean distribution.")
+    if core.current.get_product('Python27'):
+        python_dir = core.current.get_product('Python27').parameters['install_dir']
+        os.delete_path(os.path_join(python_dir,'python27.base_package.txt'))
+  find_installed_command: |
+    if core.current.get_product('Python27'):
+        python_dir = core.current.get_product('Python27').parameters['install_dir']
+        base_package_path = os.path_join(python_dir,'python27.base_package.txt')
+        if os.path_exists(base_package_path):
+            result = InstalledProductInfo()
+            result.version = os.read_file(base_package_path)
+            result.install_dir = python_dir
+

@@ -1,0 +1,8 @@
+- application:  Joomla
+  os: windows
+  version: 3.3.3
+  files:
+  - file: http://joomlacode.org/gf/download/frsrelease/19665/160049/Joomla_3.3.3-Stable-Full_Package.zip
+    sha1: 98720963b0210b478b3d3c128f2d9bc05641b920
+
+

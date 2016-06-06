@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+ 
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+        <Ref id="DeploymentManager">
+          <Call name="addAppProvider">
+            <Arg>
+              <New class="org.eclipse.jetty.deploy.providers.ContextProvider">
+                <Set name="monitoredDirName"><Env name="JETTY_CONTEXTS_DIR" default="./contexts"/></Set>
+                <Set name="scanInterval">5</Set>
+              </New>
+            </Arg>
+          </Call>
+        </Ref>
+
+</Configure>

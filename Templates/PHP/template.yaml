@@ -1,0 +1,50 @@
+- application:  PhpProject
+  title: PHP Project
+  version: 1.0
+  description: |
+    Sample PHP project. Simply install it and copy your PHP application over.
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: php-100x100.png
+  tags:
+  - template
+  os: windows
+
+  files:
+  - file: template.zip
+    filename: template.zip
+  - file: https://getcomposer.org/installer
+    filename: composer_install.pchar
+  dependencies:
+  - or:
+    - Php55Engine
+    - Php54Engine
+    - Php53Engine
+
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.cmd('php "{0}" -- --filename=composer.php -- --install-dir="{1}"'.format(files[1].path, install_path))
+
+  engines:
+
+  - engine: Php55Engine
+    path: ".php"
+    environment_variables:
+      PHP_INI: '%APPL_PHYSICAL_PATH%\php55.local.ini'
+
+  - engine: Php54Engine
+    path: ".php"
+    environment_variables:
+      PHP_INI: '%APPL_PHYSICAL_PATH%\php54.local.ini'
+
+  - engine: Php53Engine
+    path: ".php"
+    environment_variables:
+      PHP_INI: '%APPL_PHYSICAL_PATH%\php53.local.ini'
+
+  locations:
+  - engine: selected-engine
+    path: "*.php"

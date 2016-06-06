@@ -1,0 +1,49 @@
+- application: Wordpress
+  title: Wordpress
+  description: WordPress is web software you can use to create a beautiful website or blog.
+  author: WordPress Foundation
+  link: http://wordpress.org/
+  eula: http://wordpress.org/about/license/
+  icon: wordpress-200x200.png
+  tags:
+  - cms
+  - blog
+
+
+- application: Wordpress
+  os: windows
+  dependencies:
+  - or:
+    - Php54Engine
+    - Php55Engine
+    - Php53Engine
+  - Mysql
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path, 'wordpress')
+    os.chdir(install_path)
+    os.copy_file('wp-config-sample.php', 'wp-config.php')
+    core.api.os.shell.replace_in_file('wp-config.php', r'database_name_here', parameters['db-name'] )
+    core.api.os.shell.replace_in_file('wp-config.php', r'username_here',      parameters['db-username'] )
+    core.api.os.shell.replace_in_file('wp-config.php', r'password_here',      parameters['db-password'] )
+    core.api.os.shell.replace_in_file('wp-config.php', r'localhost',          parameters['db-host'] )
+  database_type:
+    - mysql
+  parameters:
+    ~
+  engines:
+  - engine: Php55Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning
+  - engine: Php54Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning
+  - engine: Php53Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning

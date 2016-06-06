@@ -1,0 +1,43 @@
+- application: DjangoCms
+  title: Django CMS
+  description: The open source content management system based on the Web framework Django.
+  author: Divio AG
+  link: https://www.django-cms.org/en/
+  eula: http://opensource.org/licenses/BSD-3-Clause
+  icon: djangocms-100x100.png
+  webserver: iis
+  tags:
+  - cms
+
+- application: DjangoCms
+  webserver: iis
+  os: windows
+  dependencies:
+  - Python27.FCGI.Engine
+  version: latest
+  files: ~
+  #- file: web.config.txt
+  install_command: |
+    install_path = parameters['physical-path']
+    python.create_virtual_env(install_path)
+    os.chdir(install_path)
+    os.cmd(r'venv\scripts\easy_install.exe Pillow')
+    os.cmd(r'venv\scripts\pip install djangocms-installer')
+    os.cmd(r'venv\scripts\djangocms --no-input -s -p djangocmsproject --bootstrap yes --starting-page yes --no-user djangocmsproject')
+    # web.config
+    # os.copy_file(files[0].path, install_path)
+  parameters: []
+
+
+  engines:
+    - engine: Python27.FCGI.Engine
+      path: "*"
+      environment_variables:
+        DJANGO_SETTINGS: "settings.py"
+        #ERROR_LOG_LEVEL: warning
+        VIRTUAL_ENV: "%APPL_PHYSICAL_PATH%\\venv"
+        PATH: "%APPL_PHYSICAL_PATH%\\venv\\Scripts;%PATH%"
+        PYTHONPATH: "%APPL_PHYSICAL_PATH%\\venv\\lib\\site-packages;%APPL_PHYSICAL_PATH%\\venv\\lib"
+        WSGI_APP: "cmsproject.wsgi.application"
+
+

@@ -1,0 +1,45 @@
+- product:  Oracle.JDK
+  title: Oracle Java SE Development Kit
+  description: |
+    Due to Oracle license restrictions Helicon Zoo cannot install, link or bundle
+    Java Development Kit. You will have to go to Oracle's web site, download and install
+    JDK manually. Sorry for inconvenience.               
+  author: Oracle Corp.
+  link: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+  eula: http://www.oracle.com/technetwork/java/javase/terms/license/index.html
+  icon: java-100x100.png
+  tags:
+  - server
+
+
+
+- product:  Oracle.JDK
+  version: 8.0
+  os: windows
+  
+  install_command: |
+    if not windows.get_installed_program(re.compile(r'Java SE Development Kit [78] Update \d+', re.I)):
+        print("\r\r            JAVA SE DEVELOPMENT KIT 8 NOT FOUND!\r\r")
+        print("    Due to Oracle license restrictions Helicon Zoo cannot install, link or bundle")
+        print("    Java Development Kit. You will have to go to Oracle's web site, download and install")
+        print("    JDK 8 manually. Then run this installation again. Sorry for inconvenience.")
+        raise Exception("Oracle Java SE Development Kit NOT FOUND")
+    jdkhome = windows.registry_read('HKLM\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.7', 'JavaHome')
+    if jdkhome:
+        print("JDK 7 found in %s" % jdkhome)
+        parameters['install_dir'] = jdkhome
+        os.set_system_env('JDK_HOME', jdkhome)
+    else:
+        jdkhome = windows.registry_read('HKLM\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.8', 'JavaHome')
+        print("JDK 8 found in %s" % jdkhome)
+        parameters['install_dir'] = jdkhome
+        os.set_system_env('JDK_HOME', jdkhome)
+  uninstall_command: |
+    os.remove_system_env('JDK_HOME')
+    windows.uninstall_msi_by_name(re.compile(r"Java SE Development Kit 8 Update \d+", re.I))
+  find_installed_command: |
+    if 'install_dir' in parameters:
+        result = windows.get_installed_program(re.compile(r'Java SE Development Kit [78] Update \d+', re.I))
+
+
+

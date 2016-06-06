@@ -1,0 +1,8 @@
+- application:  Wordpress
+  os: windows
+  version: 4.3.1
+  files:
+  - file: https://wordpress.org/wordpress-4.3.1.zip
+    sha1: c9a52e9bf4ab0f6b9899b8d9b1e079fe5aeb6a20
+
+

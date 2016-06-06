@@ -1,0 +1,68 @@
+- application:  ZooRubyProject
+  title: Ruby Project
+  version: 1.0
+  description: |
+    Sample Ruby project with instruction how to run Ruby applications with Helicon Zoo.
+    Please use this project as a starting point for your development or to deploy existing application by
+    simply overwriting files of this project. This project can run on both Ruby 1.9 and Ruby 2.1 using HTTP
+    or FastCGI engines.    
+  link: http://www.helicontech.com/zoo/
+  author: Helicon Tech
+  eula: http://www.helicontech.com/zoo/license.html
+  icon: ruby-100x100.png
+  tags:
+  - template
+  os: windows
+
+  files:
+  - file: template.zip
+
+  dependencies:
+  - or:
+    - Ruby.2.1.FCGI.Engine
+    - Ruby.2.1.HTTP.Engine
+    - Ruby.1.9.FCGI.Engine
+    - Ruby.1.9.HTTP.Engine
+
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path )
+    windows.set_write_permission(install_path, 'IIS_IUSRS')
+    os.chdir(install_path)
+    print("Doing 'bundle install'")
+    os.cmd(r'bundle install')
+#    os.cmd(r'rake db:create --trace')
+#    os.cmd(r'rake generate_session_store --trace')
+#    os.cmd(r'rake db:migrate --trace')
+
+
+  locations:
+  - path: 'public'
+    engine: none
+  - path: '*'
+    engine: selected-engine
+
+  engines:
+  - engine: Ruby.2.1.FCGI.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"
+
+  - engine: Ruby.2.1.HTTP.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"
+
+  - engine: Ruby.1.9.FCGI.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"
+
+  - engine: Ruby.1.9.HTTP.Engine
+    environment_variables:
+      RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
+      RACK_ENV: "development"
+      ERROR_LOG_DIR: "log"

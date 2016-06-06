@@ -1,0 +1,57 @@
+- product: Strawberry.Perl512
+  title: Strawberry Perl 5.12
+  description: Perl is a programming language suitable
+    for writing simple scripts as well as complex applications - see http://www.perl.org.
+    Strawberry Perl is a perl environment for MS Windows containing all you need to run and develop perl applications.
+    It is designed to be as close as possible to perl environment on UNIX systems.
+  link: http://strawberryperl.com/
+  eula: http://www.gnu.org/licenses/gpl-3.0.html
+  author: Larry Wall
+  icon: perl-100x100.png
+  tags:
+  - server
+
+- product: Strawberry.Perl512
+  os: windows
+  version: 5.12.2.0
+  files:
+  - file: http://strawberryperl.com/download/5.12.2.0/strawberry-perl-5.12.2.0.zip
+  install_command: |
+    perl_path = parameters['install_dir']
+    os.un7zip(files[0].path, perl_path  )
+    os.cmd(r'"{0}\perl\bin\perl.exe" "{0}\relocation.pl.bat"'.format(perl_path))
+
+  find_installed_command: |
+    if 'install_dir' in parameters and os.path_exists(parameters['install_dir']):
+      result = InstalledProductInfo()
+      #result.version = windows.get_file_version(parameters['install_dir'] + '\\perl\\bin\\perl.exe', parts=3)
+      result.version = "5.12.2.0"
+      result.install_dir = parameters['install_dir']
+  uninstall_command: |
+    os.delete_path(parameters['install_dir'])
+
+
+
+#- product: Strawberry.Perl518
+#  bitness: 32
+#  version: 5.18.2002
+#  files:
+#  - file: http://strawberryperl.com/download/5.18.2.2/strawberry-perl-5.18.2.2-32bit.msi
+#    sha1: 2d92bf087c446f81443df650ce320316930622a7
+#  find_installed_command: |
+#    result = windows.get_installed_program(re.compile(r"Strawberry\s+Perl", re.I))
+#  uninstall_command: |
+#    windows.uninstall_msi_by_name(re.compile(r"Strawberry\s+Perl", re.I), product.version)
+#
+#
+#
+#- product: Strawberry.Perl518
+#  bitness: 64
+#  version: 5.18.2002
+#  files:
+#  - file: http://strawberryperl.com/download/5.18.2.2/strawberry-perl-5.18.2.2-64bit.msi
+#    sha1: 9cb0411c7def6025e58a22c7aa3727980a39ab23
+#  find_installed_command: |
+#    result = windows.get_installed_program(re.compile(r"Strawberry\s+Perl\s+\(64.*\)", re.I))
+#  uninstall_command: |
+#    windows.uninstall_msi_by_name(re.compile(r"Strawberry\s+Perl\s+\(64.*\)", re.I), product.version)

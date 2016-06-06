@@ -1,0 +1,46 @@
+- application: Joomla
+  title: Joomla
+  description: |
+      Joomla is an award-winning content management system (CMS), which enables you to 
+      build Web sites and powerful online applications. Many aspects, including its
+      ease-of-use and extensibility, have made Joomla the most popular Web site software 
+      available. Best of all, Joomla is an open source solution that is freely available to 
+      everyone.
+  author:  Open Source Matters, Inc.
+  link: http://community.joomla.org/
+  eula: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+  icon: joomla-200x200.png
+  tags:
+  - cms
+
+
+- application: Joomla
+  os: windows
+  dependencies:
+  - or:
+    - Php55Engine
+    - Php54Engine
+    - Php53Engine
+  install_command: |
+    install_path = parameters['physical-path']
+    os.un7zip(files[0].path, install_path, '')
+  database_type:
+    ~
+  parameters:
+    ~
+  engines:
+  - engine: Php55Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning
+  - engine: Php54Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning
+  - engine: Php53Engine
+    path: "*.php"
+    environment_variables:
+      PHP_INI: "my-php.ini"
+      ERROR_LOG_LEVEL: warning
