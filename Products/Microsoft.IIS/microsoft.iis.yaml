@@ -27,7 +27,7 @@
     windows.install_feature("IIS-ApplicationDevelopment")
     windows.install_feature("IIS-NetFxExtensibility")
     windows.install_feature("IIS-WebServerManagementTools")
-  uninstall_command:
+  uninstall_command: |
     windows.uninstall_feature("IIS-WebServerRole")
     windows.uninstall_feature("IIS-WebServer")
     windows.uninstall_feature("IIS-CommonHttpFeatures")

@@ -4,7 +4,7 @@
   version: 4.0.80
   files:
   #- file: http://hv/view/Zoo%20v4/job/Helicon_Zoo_4_Module/lastSuccessfulBuild/artifact/InstallProjects/bin/Installer/x86/HeliconZoo_x86_Express.msi
-  - file: https://www.helicontech.com/zoo4_feed/Products/Helicon.Zoo.IISModule/HeliconZoo_x86_Express.msi
+  - file: HeliconZoo_x86_Express.msi
 
 
 - product: Helicon.Zoo.IISExpressModule
@@ -13,4 +13,4 @@
   version: 4.0.80
   files:
 #  - file: http://hv/view/Zoo%20v4/job/Helicon_Zoo_4_Module/lastSuccessfulBuild/artifact/InstallProjects/bin/Installer/x64/HeliconZoo_x64_Express.msi
-  - file: https://www.helicontech.com/zoo4_feed/Products/Helicon.Zoo.IISModule/HeliconZoo_x64_Express.msi
+  - file: HeliconZoo_x64_Express.msi
