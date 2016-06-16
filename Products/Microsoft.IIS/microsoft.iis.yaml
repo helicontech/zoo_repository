@@ -45,13 +45,12 @@
     windows.uninstall_feature("IIS-NetFxExtensibility")
     windows.uninstall_feature("IIS-WebServerManagementTools")
   find_installed_command: |
-    major_version = windows.registry_read("HKLM\\SOFTWARE\\Microsoft\\INETSTP", "MajorVersion")
-    minor_version = windows.registry_read("HKLM\\SOFTWARE\\Microsoft\\INETSTP", "MinorVersion")
-    if major_version:
-      result = InstalledProductInfo()
-      result.version = "{0}.{1}".format(major_version, minor_version)
-      result.install_dir = r"%SystemDrive%\Windows\System32\inetsrv"
-
+    major_version = windows.registry_read(r"HKLM\SOFTWARE\Microsoft\INETSTP", "MajorVersion")
+    minor_version = windows.registry_read(r"HKLM\SOFTWARE\Microsoft\INETSTP", "MinorVersion")
+    if major_version and windows.registry_read(r"HKLM\SYSTEM\CurrentControlSet\Services\W3SVC\Parameters", "MajorVersion"):
+        result = InstalledProductInfo()
+        result.version = "{0}.{1}".format(major_version, minor_version)
+        result.install_dir = r"%SystemDrive%\Windows\System32\inetsrv"
 
 - product:  Microsoft.IIS
   webserver: iis

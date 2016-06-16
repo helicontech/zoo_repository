@@ -55,7 +55,7 @@
 
 
 - engine: Railo4Jetty8Engine
-  version: 1.0.0.0
+  version: 1.0
   webserver: iisexpress
   files:
     - file: lucee.jetty8.engine.zip
