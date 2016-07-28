@@ -22,8 +22,8 @@
 
   dependencies:
   - or:
-    - Ruby.2.1.FCGI.Engine
-    - Ruby.2.1.HTTP.Engine
+    - Ruby.2.3.FCGI.Engine
+    - Ruby.2.3.HTTP.Engine
 
   install_command: |
     install_path = parameters['physical-path']
@@ -47,14 +47,14 @@
 
   engines:
 
-  - engine: Ruby.2.1.FCGI.Engine
+  - engine: Ruby.2.3.FCGI.Engine
     environment_variables:
       RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
       RACK_ENV: "development"
       ERROR_LOG_DIR: "log"
       REDMINE_LANG: 'en'
 
-  - engine: Ruby.2.1.HTTP.Engine
+  - engine: Ruby.2.3.HTTP.Engine
     environment_variables:
       RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
       RACK_ENV: "development"

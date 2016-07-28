@@ -4,7 +4,7 @@
   description: |
     Sample Ruby project with instruction how to run Ruby applications with Helicon Zoo.
     Please use this project as a starting point for your development or to deploy existing application by
-    simply overwriting files of this project. This project can run on both Ruby 1.9 and Ruby 2.1 using HTTP
+    simply overwriting files of this project. This project can run on both Ruby 1.9 and Ruby.2.3 using HTTP
     or FastCGI engines.    
   link: http://www.helicontech.com/zoo/
   author: Helicon Tech
@@ -19,8 +19,8 @@
 
   dependencies:
   - or:
-    - Ruby.2.1.FCGI.Engine
-    - Ruby.2.1.HTTP.Engine
+    - Ruby.2.3.FCGI.Engine
+    - Ruby.2.3.HTTP.Engine
     - Ruby.1.9.FCGI.Engine
     - Ruby.1.9.HTTP.Engine
 
@@ -29,7 +29,9 @@
     os.un7zip(files[0].path, install_path )
     windows.set_write_permission(install_path, 'IIS_IUSRS')
     os.chdir(install_path)
+    os.cmd(r'gem install bundler')
     print("Doing 'bundle install'")
+    os.cmd(r'gem install bundler')
     os.cmd(r'bundle install')
 #    os.cmd(r'rake db:create --trace')
 #    os.cmd(r'rake generate_session_store --trace')
@@ -43,13 +45,13 @@
     engine: selected-engine
 
   engines:
-  - engine: Ruby.2.1.FCGI.Engine
+  - engine: Ruby.2.3.FCGI.Engine
     environment_variables:
       RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
       RACK_ENV: "development"
       ERROR_LOG_DIR: "log"
 
-  - engine: Ruby.2.1.HTTP.Engine
+  - engine: Ruby.2.3.HTTP.Engine
     environment_variables:
       RAILS_RELATIVE_URL_ROOT: "%APPL_VIRTUAL_PATH%"
       RACK_ENV: "development"
